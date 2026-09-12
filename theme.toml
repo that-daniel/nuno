@@ -6,7 +6,7 @@ homepage = "https://github.com/that-daniel/nuno"
 demosite = "https://that-daniel.github.io/nuno/"
 tags = ["blog", "minimal", "dark", "personal", "fast", "responsive", "accessibility"]
 features = ["dark mode", "client-side search", "table of contents", "code copy", "certifications", "bookshelf", "resume", "multilingual"]
-min_version = "0.146.0"
+min_version = "0.158.0"
 
 [author]
   name = "that-daniel"

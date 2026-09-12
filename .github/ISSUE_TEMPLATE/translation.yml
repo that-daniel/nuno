@@ -1,0 +1,43 @@
+name: Translation
+description: Offer or request a translation of the theme's UI strings
+labels: ["i18n"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Translations are the most welcome contribution to this theme and need no
+        Hugo knowledge — copy [`i18n/en.toml`](../../i18n/en.toml) to
+        `i18n/<lang>.toml` and translate the values.
+
+        You can open a pull request directly; this issue is for claiming a
+        language first so two people do not duplicate the work.
+
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      placeholder: "Malayalam (ml)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: intent
+    attributes:
+      label: Are you offering or requesting
+      options:
+        - I am offering to translate it
+        - I am requesting someone translate it
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        **Two things to watch when translating:**
+
+        - Placeholders like `{{ .count }}`, `{{ .name }}` and the literal `{n}`
+          must survive into your translation — they are substituted at build
+          time or in the browser.
+        - `bookReading` is the *visible* label for a currently-reading book.
+          Front matter still has to say `status: "Reading"` in English, because
+          the theme matches that string literally.

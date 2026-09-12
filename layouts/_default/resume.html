@@ -3,7 +3,7 @@
        of prose. Falls back to page content if no data file is present. */ -}}
 {{ define "wrapclass" }}wrap--certs{{ end }}
 {{ define "main" }}
-{{- $r := .Site.Data.resume -}}
+{{- $r := hugo.Data.resume -}}
 
 {{- if not $r }}
   <header class="page-header">

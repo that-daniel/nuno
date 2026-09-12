@@ -1,0 +1,44 @@
+name: Feature or change request
+description: Suggest something the theme should do differently
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The theme's scope is deliberately narrow, and CONTRIBUTING.md lists what
+        is likely to be declined — cover images, share buttons, comments,
+        analytics, a second typeface, and anything adding a third-party request.
+        That list is the design, not a backlog. Proposing one of them is fine,
+        but lead with the reasoning.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: Describe the situation you hit, not the solution you want.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you have in mind
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you tried instead
+      description: |
+        A lot of this is reachable already — overriding a layout in your own
+        site, a custom `i18n/` file, or your own CSS. If one of those nearly
+        works, saying why it does not is the strongest case for a change.
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This does not add a third-party network request to any page
+        - label: I have read the "What is likely to be declined" list in CONTRIBUTING.md

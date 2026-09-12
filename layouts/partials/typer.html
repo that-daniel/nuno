@@ -2,7 +2,7 @@
    Every line is rendered invisibly into the same grid cell, so the block is
    always as tall as the tallest line and typing never reflows the page.
    Line 1 is server-rendered in full: that is the no-JS view. */ -}}
-{{- $lines := .Site.Data.quotes.lines -}}
+{{- $lines := hugo.Data.quotes.lines -}}
 {{- with $lines }}
   {{- $first := index . 0 }}
 <div class="typer" data-nuno-typer>

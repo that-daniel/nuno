@@ -20,7 +20,7 @@ jobs:
         # The oldest version theme.toml claims, and the newest release. If the
         # floor build breaks, either fix it or raise min_version — do not just
         # drop this leg.
-        hugo: ["0.146.0", "latest"]
+        hugo: ["0.158.0", "latest"]
     steps:
       - uses: actions/checkout@v4
 

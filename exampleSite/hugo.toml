@@ -9,7 +9,7 @@
 # below is optional — the commented defaults are what you get if you omit it.
 
 baseURL = "https://that-daniel.github.io/nuno/"
-languageCode = "en-gb"
+locale = "en-gb"
 title = "nuno"
 theme = "nuno"
 

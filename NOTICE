@@ -1,0 +1,23 @@
+nuno — third-party components
+=============================
+
+The theme itself is MIT licensed; see LICENSE.
+
+This repository also redistributes one third-party component under a different
+licence, which LICENSE deliberately does not mention — appending to a licence
+file stops GitHub and other scanners recognising it.
+
+Nunito
+------
+static/fonts/nunito-latin.woff2
+static/fonts/nunito-latin-ext.woff2
+
+Copyright the Nunito Project Authors (https://github.com/googlefonts/nunito),
+licensed under the SIL Open Font License, Version 1.1.
+
+The full licence text ships alongside the fonts at static/fonts/OFL.txt.
+See also https://openfontlicense.org/
+
+Under the OFL, these font files may be redistributed and bundled with your site,
+but they may not be sold on their own, and any derivative font must not use the
+reserved name. Using them to serve a website is exactly what the licence is for.

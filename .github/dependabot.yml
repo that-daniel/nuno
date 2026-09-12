@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # The theme has no package manager — the only pinned dependencies it has are
+  # the actions in .github/workflows/, and those are worth keeping current.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "ci"

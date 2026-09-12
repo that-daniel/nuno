@@ -8,7 +8,7 @@ certifications, books and a resume.
 First paint is ~50 KB gzipped over 4 requests, with no third-party connections
 at all.
 
-Requires Hugo **extended** 0.146+ (built and tested on 0.153.4).
+Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 
 **[Demo](https://that-daniel.github.io/nuno/)** — the demo is the
 [`exampleSite/`](exampleSite/) directory in this repo.
@@ -475,6 +475,9 @@ cd exampleSite && hugo --themesDir ../.. --printI18nWarnings --printPathWarnings
 
 ## Licence
 
-MIT — see [LICENSE](LICENSE). Nunito is licensed separately under the SIL Open
-Font License; the full text ships at
-[`static/fonts/OFL.txt`](static/fonts/OFL.txt).
+MIT — see [LICENSE](LICENSE).
+
+Nunito is licensed separately under the SIL Open Font License; the full text
+ships at [`static/fonts/OFL.txt`](static/fonts/OFL.txt) and the attribution is
+in [NOTICE](NOTICE). It is kept out of `LICENSE` on purpose — extra text in that
+file stops GitHub recognising the repo as MIT.

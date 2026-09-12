@@ -1,0 +1,68 @@
+name: Bug report
+description: Something in the theme renders or behaves incorrectly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. The most useful thing you can include is whether
+        the problem also happens in this repo's `exampleSite/` — that separates
+        a theme bug from a site-configuration one.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: And what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: |
+        Steps, or better, a minimal config. If it reproduces in `exampleSite/`,
+        the change you made to it is usually the whole report.
+      placeholder: |
+        1. cd exampleSite && hugo server --themesDir ../..
+        2. Set params.x to "y"
+        3. Open /posts/welcome-to-nuno/
+    validations:
+      required: true
+
+  - type: input
+    id: hugo
+    attributes:
+      label: Hugo version
+      description: "Output of `hugo version` — the extended build is required."
+      placeholder: "hugo v0.166.0+extended darwin/arm64"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: palette
+    attributes:
+      label: Which palettes show it
+      description: Most visual bugs only appear in one of the four combinations.
+      multiple: true
+      options:
+        - dark · brown
+        - dark · green
+        - light · brown
+        - light · green
+        - not a visual bug
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: "Firefox 142, Android phone"
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I can reproduce this with a clean `exampleSite/` build, or I have explained what differs in my site
+        - label: I have read the "Known behaviour" section of the README, and this is not one of those

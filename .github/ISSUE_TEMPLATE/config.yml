@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question about using the theme
+    url: https://github.com/that-daniel/nuno/discussions
+    about: Configuration and how-to questions are better as a discussion than an issue.
+  - name: Security vulnerability
+    url: https://github.com/that-daniel/nuno/security/advisories/new
+    about: Please report privately rather than in a public issue. See SECURITY.md.
+  - name: Hugo itself
+    url: https://discourse.gohugo.io/
+    about: For problems with Hugo rather than this theme.
