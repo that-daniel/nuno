@@ -2,7 +2,10 @@
 title: "The Image Pipeline"
 description: "Every image is converted, capped and measured at build time. It is the single biggest thing keeping pages small."
 date: 2026-03-02T09:00:00Z
+lastmod: 2026-05-20T09:00:00Z
 categories: ["Performance"]
+series: ["Getting to know nuno"]
+seriesOrder: 3
 tags: ["Performance", "Images", "Hugo"]
 cover:
   image: "images/example-figure.png"

@@ -8,6 +8,21 @@
 {{- $headings := len (findRE "<li" $toc) -}}
 {{- $showToc := and (ge $headings 2) (ne (.Params.showToc | default true) false) -}}
 
+{{- /* Only chain and cross-link pages that belong to a content section. Root
+       level pages like /search/ and /resume/ are otherwise strung together as
+       if they were a series, which they are not. Needed above for related
+       posts and below for the older/newer nav. */ -}}
+{{- $sections := .Site.Params.mainSections | default (slice "posts") -}}
+{{- $inSection := and .Section (in $sections .Section) -}}
+
+{{- /* Reading progress. Opt-in, and only on a page that is actually a read —
+       a bar that fills instantly on a three-line page is just a flicker.
+       aria-hidden because a screen reader already knows the scroll position;
+       a live-updating percentage would be noise, not information. */ -}}
+{{- if and (.Site.Params.readingProgress | default false) $inSection }}
+<div class="progress" aria-hidden="true"><span class="progress__bar" data-nuno-progress></span></div>
+{{- end }}
+
 <header class="post__header">
   <div class="post__headline">
     {{- with (index (.Params.categories | default slice) 0) }}
@@ -24,10 +39,19 @@
   <div class="post__meta">
     <span>{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
     {{- if .ReadingTime }}<span>{{ i18n "minutesRead" (dict "count" .ReadingTime) }}</span>{{ end }}
+    {{- /* Same calendar-day test the head uses: Lastmod defaults to Date, and
+           under enableGitInfo it is the commit time, which is hours off the
+           front matter date on the first commit. Only a different day is an
+           update worth telling the reader about. */ -}}
+    {{- if ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02") }}
+      <span class="post__meta-updated">{{ i18n "updatedOn" (dict "date" (.Lastmod.Format (.Site.Params.DateFormat | default "January 2, 2006"))) }}</span>
+    {{- end }}
     {{- with $author }}<span class="post__meta-author">{{ i18n "byAuthor" (dict "name" .) }}</span>{{ end }}
   </div>
   {{- end }}
 </header>
+
+{{ partial "series-nav.html" . }}
 
 <div class="post__body{{ if not $showToc }} post__body--wide{{ end }}">
   <article class="prose" id="main">
@@ -45,15 +69,12 @@
   {{- end }}
 </div>
 
+{{- if $inSection }}{{ partial "related.html" . }}{{ end }}
+
 {{- /* Stay inside the section: .Prev/.Next span every regular page, so a
        post could otherwise link to a book. A section is ordered newest-first,
        and NextInSection walks towards newer
        (the opposite direction to .Next/.Prev — verified against real dates). */ -}}
-{{- /* Only chain pages that belong to a content section. Root-level pages like
-       /search/ and /resume/ are otherwise strung together as if they were a
-       series, which they are not. */ -}}
-{{- $sections := .Site.Params.mainSections | default (slice "posts") -}}
-{{- $inSection := and .Section (in $sections .Section) -}}
 {{- $older := cond $inSection .PrevInSection nil -}}
 {{- $newer := cond $inSection .NextInSection nil -}}
 {{- if or $older $newer }}

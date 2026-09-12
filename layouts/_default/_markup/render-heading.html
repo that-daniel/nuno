@@ -1,0 +1,23 @@
+{{- /* Headings, with a link to themselves.
+
+       The id is Hugo's own `.Anchor`, which is what `.TableOfContents` links
+       to — deriving our own would silently break every TOC entry.
+
+       The "#" is drawn by CSS rather than written here, so it never reaches the
+       DOM as text. A literal glyph would be picked up by `.Plain`, and so would
+       ride along in `.Summary` — meaning every excerpt for a post with no
+       `description` could end "The symptom#". The accessible name comes from
+       the aria-label instead, so a screen reader announces "Link to this
+       section" rather than "number sign".
+
+       It is invisible until the heading is hovered or the link itself is
+       focused, so keyboard users can still reach it.
+
+       Only `class` is passed through from Goldmark attributes. `id` is
+       deliberately ignored in favour of `.Anchor` — a custom `{#id}` already
+       becomes the anchor, so honouring both would emit two ids. */ -}}
+
+{{- $anchor := .Anchor -}}
+<h{{ .Level }} id="{{ $anchor }}"
+  {{- with .Attributes.class }} class="{{ . }}"{{ end -}}
+>{{ .Text | safeHTML }}<a class="heading-anchor" href="#{{ $anchor }}" aria-label="{{ i18n "linkToSection" }}"></a></h{{ .Level }}>

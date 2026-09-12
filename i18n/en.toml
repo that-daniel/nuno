@@ -101,6 +101,9 @@ other = "Archive · {{ .count }}"
 one = "Archive · {{ .count }} →"
 other = "Archive · {{ .count }} →"
 
+[showMore]
+other = "Show more"
+
 # --- Reading time -----------------------------------------------------------
 
 [minutes]
@@ -119,8 +122,24 @@ other = "On this page"
 [byAuthor]
 other = "by {{ .name }}"
 
+[updatedOn]
+other = "Updated {{ .date }}"
+
 [tagged]
 other = "Tagged · {{ .tags }}"
+
+[linkToSection]
+other = "Link to this section"
+
+[seriesLabel]
+other = "Series"
+
+# Rendered beside the series name, e.g. "Part 2 of 5".
+[seriesPart]
+other = "Part {{ .n }} of {{ .total }}"
+
+[relatedReading]
+other = "Related reading"
 
 [older]
 other = "← Older"

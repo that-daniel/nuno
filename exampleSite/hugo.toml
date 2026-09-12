@@ -30,6 +30,27 @@ buildExpired = false
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
+# Drives the "Related reading" block under a post. Without this Hugo indexes
+# `keywords`, which this theme's front matter does not use, so the block would
+# simply never appear. Tags are the strongest signal; date only breaks ties, so
+# a recent post is preferred among equally related ones.
+[related]
+  threshold = 80
+  includeNewer = true
+  toLower = true
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+  [[related.indices]]
+    name = "categories"
+    weight = 60
+  [[related.indices]]
+    name = "series"
+    weight = 40
+  [[related.indices]]
+    name = "date"
+    weight = 10
+
 [markup]
   [markup.tableOfContents]
     startLevel = 2
@@ -63,8 +84,16 @@ buildExpired = false
   # params.portrait is deliberately unset so the About page shows the empty
   # portrait frame — set it to an image under assets/ or static/ to fill it.
 
+  # --- posts ---------------------------------------------------------------
+  # A thin accent bar at the top of a post, tracking scroll. Off by default;
+  # on here so the demo shows it.
+  readingProgress = true
+
   # --- home ----------------------------------------------------------------
   postsOnHome = 6
+  # postsOnHomeMax renders further posts behind a "Show more" button. Unset (or
+  # at or below postsOnHome) it does nothing, which is the default.
+  # postsOnHomeMax = 12
   masthead = 'Minimal<span class="accent">,</span><br>dark<br>by default.'
   mainSections = ["posts"]
   DateFormat = "2 January 2006"

@@ -28,14 +28,46 @@
   <link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ $s.Title }}">
 {{- end }}
 
+{{- /* Translations. AllTranslations includes this page, so each language —
+       including the current one — gets an hreflang, which is what search
+       engines expect; a set that omits itself is treated as incomplete.
+       x-default points at the site's first configured language.
+
+       Emitted only on a genuinely multilingual build: on a single-language site
+       AllTranslations is just this page, and one self-referential alternate is
+       noise. */ -}}
+{{- if gt (len .AllTranslations) 1 }}
+  {{- range .AllTranslations }}
+<link rel="alternate" hreflang="{{ .Language.Locale }}" href="{{ .Permalink }}">
+  {{- end }}
+  {{- with index .AllTranslations 0 }}
+<link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
+  {{- end }}
+{{- end }}
+
 {{- /* Open Graph */ -}}
 <meta property="og:site_name" content="{{ $s.Title }}">
 <meta property="og:title" content="{{ cond .IsHome $s.Title .Title }}">
 <meta property="og:description" content="{{ $desc | plainify | chomp }}">
 <meta property="og:url" content="{{ .Permalink }}">
 <meta property="og:type" content="{{ cond .IsPage "article" "website" }}">
-{{- if and .IsPage .Date }}
+{{- if and .IsPage (not .Date.IsZero) }}
 <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+  {{- /* Compared by calendar day, not instant: Lastmod defaults to Date, and
+         with enableGitInfo it is the commit time, which differs from the front
+         matter date by hours on the very first commit. Only a different day is
+         a real update. */ -}}
+  {{- if ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02") }}
+<meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+  {{- end }}
+{{- end }}
+{{- with .Language.Locale }}
+<meta property="og:locale" content="{{ replace . "-" "_" }}">
+{{- end }}
+{{- if gt (len .Translations) 0 }}
+  {{- range .Translations }}
+<meta property="og:locale:alternate" content="{{ replace .Language.Locale "-" "_" }}">
+  {{- end }}
 {{- end }}
 
 {{- /* Social preview image. The design deliberately drops cover images from the
@@ -69,6 +101,8 @@
 <meta name="twitter:image" content="{{ . }}">
 {{- end }}
 <meta name="twitter:card" content="{{ cond (ne $abs "") "summary_large_image" "summary" }}">
+
+{{ partial "schema.html" (dict "page" . "image" $abs) }}
 
 {{- /* Theme + ground, applied synchronously so there is never a flash.
        Reads localStorage, falls back to the configured default or the OS. */ -}}

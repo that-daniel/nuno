@@ -5,6 +5,31 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
 
 ## Unreleased
 
+### Added
+
+- **Series navigation.** A post in a `series` lists every part with the current
+  one marked. Chronological unless every part sets `seriesOrder`; a series of
+  one renders nothing.
+- **Related posts** under each post, from Hugo's similarity index, restricted to
+  `mainSections`. Needs a `related` config to produce anything — see the README.
+  `params.relatedCount` caps it.
+- **Self-linking heading anchors**, via a render hook that keeps Hugo's own
+  anchor so the table of contents still resolves.
+- **`params.postsOnHomeMax`** renders further home posts behind a "Show more"
+  button. No second request, and no-JS gets the longer list.
+- **JSON-LD**: `BlogPosting` on posts, `WebSite` on the home page, nothing
+  elsewhere.
+- **`lastmod`** shows an "Updated …" byline and `article:modified_time`,
+  compared by calendar day.
+- **Multilingual head links** — `hreflang` alternates, `x-default`, `og:locale`,
+  and a nav language switcher listing only languages the page exists in.
+- **A print stylesheet.** Forced light palette, chrome dropped, external URLs
+  spelled out.
+- **Footnote styling** for Goldmark's markup, including a `:target` mark.
+- **`params.readingProgress`** — an optional scroll bar on posts.
+- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue and pull request
+  templates, and Dependabot for the workflow actions.
+
 ### Changed
 
 - **`min_version` raised from 0.146.0 to 0.158.0.** The theme now uses
@@ -26,11 +51,6 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
 - GitHub now detects the MIT licence. The Nunito attribution moved out of
   `LICENSE` — appended text stops licence scanners matching the file — and into
   `NOTICE`.
-
-### Added
-
-- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue and pull request
-  templates, and Dependabot for the workflow actions.
 
 ## 0.1.0 — 2026-09-12
 
