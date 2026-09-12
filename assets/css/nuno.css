@@ -920,6 +920,19 @@ a:hover { color: var(--accent); }
   font-variant-numeric: tabular-nums;
 }
 
+/* --- Comments ----------------------------------------------------------- */
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+/* Reserves roughly the height of an empty giscus thread. The iframe resizes
+   itself once it loads, but without a floor the page jumps when it arrives. */
+.comments__mount { min-height: 200px; }
+.comments__noscript { font-size: 15px; color: var(--muted); }
+
 /* Post footer nav */
 .post__nav {
   display: grid;
@@ -1743,6 +1756,7 @@ a:hover { color: var(--accent); }
   .post__aside,
   .post__nav,
   .related,
+  .comments,
   .show-more,
   .progress,
   .heading-anchor,

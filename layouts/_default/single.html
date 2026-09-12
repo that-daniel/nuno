@@ -93,5 +93,9 @@
   {{- end }}
 </nav>
 {{- end }}
+
+{{- /* Last on the page, and only on a post: comments under /search/ or a
+       resume would be a thread about nothing. */ -}}
+{{- if $inSection }}{{ partial "comments.html" . }}{{ end }}
 {{- end }}
 {{ end }}

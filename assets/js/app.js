@@ -374,6 +374,70 @@
     });
   })();
 
+  /* --- Comments (giscus) -------------------------------------------------- */
+
+  (function comments() {
+    var mount = $('[data-nuno-giscus]');
+    if (!mount) return;
+    var d = mount.dataset;
+    var ORIGIN = 'https://giscus.app';
+    var loaded = false;
+
+    function wanted() {
+      return theme() === 'light' ? d.themeLight : d.themeDark;
+    }
+
+    function load() {
+      if (loaded) return;
+      loaded = true;
+      var s = document.createElement('script');
+      s.src = ORIGIN + '/client.js';
+      s.async = true;
+      s.crossOrigin = 'anonymous';
+      /* Giscus reads its whole configuration off the script tag. */
+      s.setAttribute('data-repo', d.repo);
+      s.setAttribute('data-repo-id', d.repoId);
+      s.setAttribute('data-category', d.category);
+      s.setAttribute('data-category-id', d.categoryId);
+      s.setAttribute('data-mapping', d.mapping);
+      s.setAttribute('data-strict', d.strict);
+      s.setAttribute('data-reactions-enabled', d.reactionsEnabled);
+      s.setAttribute('data-emit-metadata', d.emitMetadata);
+      s.setAttribute('data-input-position', d.inputPosition);
+      s.setAttribute('data-lang', d.lang);
+      s.setAttribute('data-loading', 'lazy');
+      s.setAttribute('data-theme', wanted());
+      mount.appendChild(s);
+    }
+
+    /* The theme's one third-party request, so it is not made until the reader
+       actually arrives — a visit that never reaches the foot of the article
+       costs nothing. 400px of margin means it is already there by the time it
+       is on screen. */
+    if (window.IntersectionObserver) {
+      var io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) { io.disconnect(); load(); return; }
+        }
+      }, { rootMargin: '400px 0px' });
+      io.observe(mount);
+    } else {
+      load();
+    }
+
+    /* Follow the theme toggle. Watching the attribute rather than listening on
+       the button catches every route that can change it, including another tab
+       via storage. */
+    if (window.MutationObserver) {
+      new MutationObserver(function () {
+        var frame = $('iframe.giscus-frame', mount);
+        if (!frame || !frame.contentWindow) return;
+        frame.contentWindow.postMessage(
+          { giscus: { setConfig: { theme: wanted() } } }, ORIGIN);
+      }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    }
+  })();
+
   /* --- Copy buttons ------------------------------------------------------ */
 
   $$('[data-nuno-copy]').forEach(function (btn) {
