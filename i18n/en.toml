@@ -101,6 +101,9 @@ other = "Archive · {{ .count }}"
 one = "Archive · {{ .count }} →"
 other = "Archive · {{ .count }} →"
 
+[showMore]
+other = "Show more"
+
 # --- Reading time -----------------------------------------------------------
 
 [minutes]

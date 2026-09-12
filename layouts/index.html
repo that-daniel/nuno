@@ -3,7 +3,18 @@
 {{- $sections := $s.Params.mainSections | default (slice "posts") -}}
 {{- $posts := where $s.RegularPages "Type" "in" $sections -}}
 {{- $n := int ($s.Params.postsOnHome | default 6) -}}
-{{- $recent := first $n $posts -}}
+
+{{- /* postsOnHomeMax renders further posts that a "Show more" button reveals in
+       place — the middle ground between a short home page and the full archive,
+       without a second request.
+
+       Leave it unset (or at or below postsOnHome) and nothing changes. The
+       extras are rendered visible and JavaScript hides them, not the other way
+       round, so a reader without JavaScript gets more posts rather than a
+       button that does nothing. */ -}}
+{{- $max := int ($s.Params.postsOnHomeMax | default $n) -}}
+{{- if lt $max $n }}{{ $max = $n }}{{ end -}}
+{{- $recent := first $max $posts -}}
 
 {{- /* Where "Archive · N" points. Prefer a real /archives/ page. */ -}}
 {{- $archive := "" -}}
@@ -36,7 +47,7 @@
 
   <div class="cards">
     {{- range $i, $p := $recent }}
-      <a class="card" href="{{ $p.RelPermalink }}">
+      <a class="card" href="{{ $p.RelPermalink }}"{{ if ge $i $n }} data-nuno-extra{{ end }}>
         <span class="card__meta">
           <span class="card__num">{{ printf "%02d" (add $i 1) }}</span>
           <span>{{ $p.Date.Format "Jan 2, 2006" }}{{ if $p.ReadingTime }}<span class="nuno-mobile-mins"> · {{ i18n "minutes" (dict "count" $p.ReadingTime) }}</span>{{ end }}</span>
@@ -47,6 +58,10 @@
       </a>
     {{- end }}
   </div>
+
+  {{- if gt (len $recent) $n }}
+    <button class="show-more" type="button" data-nuno-show-more hidden>{{ i18n "showMore" }}</button>
+  {{- end }}
 
   {{- with $archive }}
     <a class="archive-link" href="{{ . }}">{{ i18n "archiveCountArrow" (dict "count" (len $posts)) }}</a>

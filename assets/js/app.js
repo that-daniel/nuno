@@ -300,6 +300,30 @@
     setActive(headings[0].id);
   })();
 
+  /* --- Home: show more --------------------------------------------------- */
+
+  (function showMore() {
+    var btn = $('[data-nuno-show-more]');
+    if (!btn) return;
+    var extras = $$('[data-nuno-extra]');
+    if (!extras.length) return;
+
+    /* The extras ship visible and are hidden here, so a reader without
+       JavaScript gets the longer list rather than a button that cannot do
+       anything. */
+    extras.forEach(function (el) { el.hidden = true; });
+    btn.hidden = false;
+
+    btn.addEventListener('click', function () {
+      extras.forEach(function (el) { el.hidden = false; });
+      btn.hidden = true;
+      /* The button has just vanished from under the keyboard focus, which would
+         drop the reader back at the top of the document. Hand focus to the
+         first card that appeared instead. */
+      if (extras[0] && extras[0].focus) extras[0].focus();
+    });
+  })();
+
   /* --- Copy buttons ------------------------------------------------------ */
 
   $$('[data-nuno-copy]').forEach(function (btn) {
