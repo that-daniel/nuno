@@ -1,0 +1,51 @@
+# Cuts a GitHub Release when a vX.Y.Z tag is pushed.
+#
+# The notes are the matching CHANGELOG section, so there is one place to write
+# them and no chance of the release and the changelog disagreeing. A tag whose
+# version has no section fails the job rather than publishing an empty release.
+#
+# Uses the gh CLI rather than a release action: one less third-party dependency
+# to trust and for Dependabot to chase, in a theme that makes a point of not
+# having any.
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Extract the changelog section for this tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          # Everything between this version's heading and the next one.
+          awk -v v="$version" '
+            $0 ~ "^## " v "( |$|—)" { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+
+          if [ ! -s notes.md ]; then
+            echo "::error::No CHANGELOG section for $version. Add one before tagging."
+            exit 1
+          fi
+
+          {
+            echo
+            echo "---"
+            echo
+            echo "Install: see the [README](https://github.com/${GITHUB_REPOSITORY}#install)."
+            echo "Requires Hugo extended $(grep -oE '[0-9]+\.[0-9]+\.[0-9]+' <<< "$(grep min_version theme.toml)")+."
+          } >> notes.md
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md

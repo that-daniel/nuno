@@ -49,6 +49,7 @@ As a submodule:
 
 ```sh
 git submodule add https://github.com/that-daniel/nuno.git themes/nuno
+git -C themes/nuno checkout v0.2.0     # pin to a release
 ```
 
 Or as a Hugo module, in your config:
@@ -58,6 +59,20 @@ module:
   imports:
     - path: github.com/that-daniel/nuno
 ```
+
+```sh
+hugo mod get github.com/that-daniel/nuno@v0.2.0
+```
+
+**Pin to a tag.** Tracking the default branch means a change here lands on your
+site the next time you build, without you asking for it. Releases are listed on
+the [releases page](https://github.com/that-daniel/nuno/releases) and every one
+has a [CHANGELOG](CHANGELOG.md) section.
+
+While the theme is `0.x`, a minor bump may carry a breaking change — it will say
+so at the top of its changelog section — and patch releases never do. Upgrade by
+moving the pin: `git -C themes/nuno checkout vX.Y.Z` then commit the new pointer,
+or `hugo mod get github.com/that-daniel/nuno@vX.Y.Z`.
 
 Then set `theme: nuno`. The fastest start is to copy
 [`exampleSite/hugo.toml`](exampleSite/hugo.toml) into your site root — it lists

@@ -1,9 +1,21 @@
 # Changelog
 
-Notable changes to nuno. This project does not follow semantic versioning yet —
-it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
+Notable changes to nuno.
+
+Versions are git tags (`v0.2.0`), which is what Hugo Modules and submodule
+pinning both read. While the theme is `0.x`, a minor bump may carry a breaking
+change and will say so at the top of its section; patch releases never do. The
+other contract that matters is `min_version` in `theme.toml` — raising it is
+always a minor bump at least.
 
 ## Unreleased
+
+Nothing yet.
+
+## 0.2.0 — 2026-09-12
+
+No breaking changes: every addition below is opt-in or additive, and a site that
+upgrades without touching its config renders exactly as it did on 0.1.0.
 
 ### Added
 
