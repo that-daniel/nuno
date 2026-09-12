@@ -22,7 +22,7 @@ jobs:
         # drop this leg.
         hugo: ["0.158.0", "latest"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Hugo (extended)
         uses: peaceiris/actions-hugo@v3
