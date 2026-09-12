@@ -19,7 +19,10 @@ Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 
 - [Install](#install) · [Configuration](#configuration) · [Navigation](#navigation)
 - [Theme and ground](#theme-and-ground) · [Accents and contrast](#accents-and-contrast)
-- [Content](#content): [posts](#posts), [masthead](#typed-masthead),
+- [Content](#content): [posts](#posts), [series](#series),
+  [related posts](#related-posts), [reading progress](#reading-progress),
+  [footnotes](#footnotes), [printing](#printing),
+  [structured data](#structured-data), [masthead](#typed-masthead),
   [callouts](#callouts), [blockquotes](#blockquote-attribution),
   [images](#images), [certifications](#certifications), [books](#books),
   [resume](#resume), [about](#about-and-the-portrait)
@@ -75,6 +78,10 @@ params:
   brand: "example.com"              # nav wordmark; defaults to the baseURL host
   tagline: "Notes, since 2024."
   postsOnHome: 6
+  postsOnHomeMax: 12    # renders more behind a "Show more" button. Unset, or at
+                        # or below postsOnHome, nothing changes.
+  relatedCount: 3       # "Related reading" entries under a post
+  readingProgress: false  # thin accent bar at the top of a post
   masthead: 'Faith,<br>technology<span class="accent">,</span><br>and life.'
   # About heading: use spans, not <br> — they stack on desktop and reflow to one
   # sentence on mobile. A <br> cannot do both.
@@ -184,6 +191,84 @@ Uses `title`, `description`, `date`, `tags`, `categories`. Excerpts fall back to
 the summary when there is no `description`. The first `categories` entry becomes
 the accent kicker above the title. `showToc: false` hides the table of contents
 on a page that would otherwise get one.
+
+`lastmod` adds an "Updated …" line to the byline and an `article:modified_time`.
+It is compared with `date` by calendar **day**, not instant — Hugo defaults
+`lastmod` to `date`, and under `enableGitInfo` it is the commit time, which is
+hours off the front matter date on a first commit. Only a different day counts
+as an update.
+
+Every markdown heading gets a `#` link to itself, shown on hover. The id is
+Hugo's own anchor, the same one the table of contents targets.
+
+### Series
+
+Add a post to a series with the `series` taxonomy, and it grows a block listing
+every part with the current one marked:
+
+```yaml
+series: ["Getting to know nuno"]
+seriesOrder: 2      # optional
+```
+
+Order is chronological unless **every** part sets `seriesOrder`, in which case
+that wins. Half-ordered is worse than unordered — one numbered post among
+unnumbered ones produces a list that looks deliberate and is not — so it is all
+or nothing. A series of one renders nothing; "Part 1 of 1" is noise.
+
+### Related posts
+
+A "Related reading" block sits under each post, drawn from Hugo's similarity
+index and restricted to `mainSections` — site-wide it would happily match a post
+against a book that shares a tag but not the point.
+
+**It needs a `related` config or it will never appear.** With none, Hugo indexes
+`keywords`, which this theme's front matter does not use, so the result is empty
+rather than wrong:
+
+```toml
+[related]
+  threshold = 80
+  includeNewer = true
+  toLower = true
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+  [[related.indices]]
+    name = "categories"
+    weight = 60
+  [[related.indices]]
+    name = "date"
+    weight = 10
+```
+
+`params.relatedCount` caps how many are shown (default 3).
+
+### Reading progress
+
+`params.readingProgress: true` adds a thin accent bar at the top of a post,
+tracking scroll. Off by default, and never shown on the About page or other
+standalone pages — a bar that fills instantly is a flicker, not information.
+
+### Footnotes
+
+Goldmark's footnotes are styled: an accent superscript in the text, the notes
+collected behind a rule at the foot of the article, and the one you jumped to
+marked while it is targeted.
+
+### Printing
+
+A post prints as an article. The palette is forced light whatever theme the
+reader chose — a dark ground prints as a block of toner — the nav, footer, table
+of contents, progress bar and every pointer-only control are dropped, and
+external links have their URL printed after them. In-page links do not:
+"(#the-symptom)" on paper helps nobody.
+
+### Structured data
+
+Posts carry JSON-LD `BlogPosting`, the home page `WebSite`. Nothing else does:
+marking a search page or a taxonomy list as an Article is a claim about content
+that is not there.
 
 ### Typed masthead
 
@@ -375,6 +460,19 @@ literal `{n}` placeholder substituted in the browser, because Hugo cannot
 pluralise a count it does not yet know at build time.
 
 Translations are very welcome as pull requests.
+
+### Multiple languages on one site
+
+On a build with more than one language configured, the theme emits `hreflang`
+alternates for every translation of the page plus `x-default`, an `og:locale`
+and `og:locale:alternate` per translation, and a language switcher in the nav.
+
+The switcher lists only the languages the current page actually exists in.
+Offering every configured language would send a reader from an untranslated post
+to a 404 rather than to a translation.
+
+None of this appears on a single-language site, where a lone self-referential
+alternate would be noise.
 
 ## Layouts
 
