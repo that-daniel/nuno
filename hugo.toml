@@ -1,0 +1,12 @@
+# Theme-level configuration. Hugo merges this into any site that uses nuno, with
+# the site's own values winning, so keep it to things that are genuinely the
+# theme's business.
+#
+# themes.gohugo.io reads the supported Hugo range from here rather than from
+# min_version in theme.toml, so both have to be kept in step.
+#
+# `extended` is deliberately not set: it was deprecated in Hugo 0.153.0 and
+# setting it would put a deprecation warning in every build.
+[module]
+  [module.hugoVersion]
+    min = "0.158.0"

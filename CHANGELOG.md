@@ -12,10 +12,18 @@ always a minor bump at least.
 
 ### Added
 
+- **`hugo.toml` at the theme root declaring `[module.hugoVersion]`.**
+  themes.gohugo.io reads the supported Hugo range from there rather than from
+  `min_version` in `theme.toml`; the two are kept in step. It also improves the
+  failure on an old Hugo from a cryptic template error to
+  `Module "nuno" is not compatible with this Hugo version: Min 0.158.0`.
+  `extended` is deliberately unset — it was deprecated in 0.153.0.
+
 - The demo now publishes one build per home style, so each can be linked
   directly: `/ledger/`, `/profile/`, `/grouped/`. Real builds of the same
   content under a subpath, not screenshots, so they cannot drift.
-- Dark and light screenshots in the README.
+- Dark and light screenshots in the README, referenced by absolute URL so they
+  render on themes.gohugo.io as well as on GitHub.
 
 ## 0.2.1 — 2026-09-12
 

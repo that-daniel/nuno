@@ -32,7 +32,7 @@ Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 
 | Dark | Light |
 | --- | --- |
-| ![nuno in dark mode](images/screenshot-dark.png) | ![nuno in light mode](images/screenshot-light.png) |
+| ![nuno in dark mode](https://raw.githubusercontent.com/that-daniel/nuno/main/images/screenshot-dark.png) | ![nuno in light mode](https://raw.githubusercontent.com/that-daniel/nuno/main/images/screenshot-light.png) |
 
 Same page, same build — only the toggle differs. Two more grounds behind it: see
 [theme and ground](#theme-and-ground).
