@@ -83,3 +83,33 @@ Please also:
 Write commit messages that explain the reasoning, not just the change. There is
 no CLA and no DCO sign-off requirement; by contributing you agree your work is
 licensed under the repository's [MIT licence](LICENSE).
+
+## Releasing
+
+For maintainers. `main` is protected: everything lands through a pull request
+with both CI builds green, so a release is only ever tagging a commit that is
+already on `main`.
+
+1. Move the `## Unreleased` entries into a new `## X.Y.Z — YYYY-MM-DD` section
+   in [`CHANGELOG.md`](CHANGELOG.md), and leave `Unreleased` saying
+   "Nothing yet." If the release breaks anything, say so in a line directly
+   under the heading — that is the line people read before upgrading.
+2. Bump the pinned versions in the README's install snippets.
+3. Land that as a PR.
+4. Tag the merge commit and push the tag:
+
+   ```sh
+   git checkout main && git pull
+   git tag -a vX.Y.Z -m "vX.Y.Z"
+   git push origin vX.Y.Z
+   ```
+
+`release.yml` does the rest: it reads the matching `CHANGELOG` section and
+publishes a GitHub Release from it. A tag with no matching section fails the
+job rather than publishing an empty release, so the tag and the changelog cannot
+drift apart.
+
+Version numbers are the tags themselves — there is no version string in
+`theme.toml` to forget to update. While the theme is `0.x`, a minor bump may
+carry a breaking change; a patch never does. Raising `min_version` is a minor
+bump at least, because it can stop someone's site building.
