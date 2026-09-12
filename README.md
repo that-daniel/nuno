@@ -8,6 +8,17 @@ certifications, books and a resume.
 First paint is ~50 KB gzipped over 4 requests, with no third-party connections
 at all.
 
+[![Build](https://github.com/that-daniel/nuno/actions/workflows/build.yml/badge.svg)](https://github.com/that-daniel/nuno/actions/workflows/build.yml)
+![Performance 100](https://img.shields.io/badge/Lighthouse_Performance-100-2ea043)
+![Accessibility 100](https://img.shields.io/badge/Accessibility-100-2ea043)
+![Best Practices 100](https://img.shields.io/badge/Best_Practices-100-2ea043)
+![SEO 100](https://img.shields.io/badge/SEO-100-2ea043)
+
+PageSpeed Insights against the demo site, mobile, September 2026. These are
+static badges recording one run, not a live check — if you are relying on the
+numbers, measure your own site: the score moves with your content, images and
+host, not just the theme.
+
 Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 
 **[Demo](https://that-daniel.github.io/nuno/)** — the demo is the
