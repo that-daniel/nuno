@@ -7,6 +7,17 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
 
 ### Added
 
+- **Home page styles — two independent switches.** `params.homeHeader`
+  (`masthead` | `profile`) picks the hero and `params.homeStyle` (`grid` |
+  `ledger`) picks the post list, the same shape as theme × ground. `profile` is
+  a portrait, name, bio and social row in place of the masthead; `ledger` is
+  numbered full-width rows, which unlike the grid never leaves a partial row.
+  `params.homeGroupByYear` splits a ledger under year headings. Each piece lives
+  in `layouts/partials/home/`, so a site can override one without forking
+  `index.html`. Unrecognised values warn and fall back. Existing sites need no
+  change: with the params unset the home page renders exactly as before.
+- `params.profileBio` sets the bio in the profile header; defaults to
+  `params.description`.
 - **Series navigation.** A post in a `series` lists every part with the current
   one marked. Chronological unless every part sets `seriesOrder`; a series of
   one renders nothing.
@@ -32,6 +43,11 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
 
 ### Changed
 
+- **The portrait and the social icon row moved into shared partials**
+  (`portrait.html`, `social-row.html`). The About page and the profile home
+  header now resolve `params.portrait` through the same lookup order — page
+  resource first, then `assets/` — rather than two copies that could drift. The
+  About page's rendered markup is unchanged.
 - **`min_version` raised from 0.146.0 to 0.158.0.** The theme now uses
   `hugo.Data` and `.Language.Locale`; the APIs they replace are deprecated and
   emit a warning on every build with Hugo 0.156+. Supporting both would have
