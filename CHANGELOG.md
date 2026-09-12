@@ -10,6 +10,12 @@ always a minor bump at least.
 
 ## Unreleased
 
+Nothing yet.
+
+## 0.2.2 — 2026-09-12
+
+No breaking changes.
+
 ### Added
 
 - **`hugo.toml` at the theme root declaring `[module.hugoVersion]`.**
