@@ -27,6 +27,8 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
   spelled out.
 - **Footnote styling** for Goldmark's markup, including a `:target` mark.
 - **`params.readingProgress`** — an optional scroll bar on posts.
+- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue and pull request
+  templates, and Dependabot for the workflow actions.
 
 ### Changed
 
@@ -42,11 +44,6 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
 - GitHub now detects the MIT licence. The Nunito attribution moved out of
   `LICENSE` — appended text stops licence scanners matching the file — and into
   `NOTICE`.
-
-### Added
-
-- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue and pull request
-  templates, and Dependabot for the workflow actions.
 
 ## 0.1.0 — 2026-09-12
 
