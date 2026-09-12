@@ -10,7 +10,22 @@ always a minor bump at least.
 
 ## Unreleased
 
-Nothing yet.
+### Changed
+
+- **A narrow screen now shows `postsOnHome` posts, not four.** The mobile
+  stylesheet cut the home list to four entries with `nth-child`, which
+  contradicted the param and — worse — outranked `[hidden]`, so "Show more"
+  revealed rows that stayed invisible. The cap is gone from both the grid and
+  the ledger; `postsOnHome` and `postsOnHomeMax` now govern every viewport.
+  Sites that liked the shorter mobile list can set `postsOnHome = 4`.
+
+### Fixed
+
+- **Tapping search on a phone now raises the keyboard.** The search bundle is
+  fetched on demand, so `focus()` ran a network round trip after the tap and
+  iOS, which only honours focus inside the gesture that asked for it, opened
+  the overlay without a keyboard. The bundle is now warmed on `pointerdown`
+  and the overlay opens synchronously on the click that follows.
 
 ## 0.2.2 — 2026-09-12
 
