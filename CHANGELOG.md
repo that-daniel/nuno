@@ -16,6 +16,13 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
 
 ### Fixed
 
+- **The table of contents highlight no longer strands on the wrong entry.** It
+  asked an `IntersectionObserver` which headings sat inside a band 10% of the
+  viewport tall, and only moved the highlight while one did. Any section taller
+  than that band scrolled its heading straight through, so the highlight stayed
+  on the *previous* section for the whole read — on a long post it never left
+  the first entry at all. It now tracks the last heading above the line below
+  the nav, computed on a throttled scroll, so there is always a correct answer.
 - GitHub now detects the MIT licence. The Nunito attribution moved out of
   `LICENSE` — appended text stops licence scanners matching the file — and into
   `NOTICE`.

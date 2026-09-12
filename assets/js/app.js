@@ -261,7 +261,7 @@
   (function toc() {
     var nav = $('[data-nuno-toc]');
     var article = $('.prose');
-    if (!nav || !article || !window.IntersectionObserver) return;
+    if (!nav || !article) return;
 
     var links = {};
     $$('a[href^="#"]', nav).forEach(function (a) {
@@ -281,23 +281,48 @@
       if (links[id]) links[id].classList.add('is-active');
     }
 
-    var visible = [];
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        var id = entry.target.id;
-        var at = visible.indexOf(id);
-        if (entry.isIntersecting && at < 0) visible.push(id);
-        if (!entry.isIntersecting && at >= 0) visible.splice(at, 1);
-      });
-      if (visible.length) {
-        // Pick the topmost heading currently in the band.
-        var first = headings.filter(function (h) { return visible.indexOf(h.id) >= 0; })[0];
-        if (first) setActive(first.id);
-      }
-    }, { rootMargin: '-20% 0px -70% 0px' });
+    /* The heading whose section is being read: the last one to have crossed the
+       line just below the nav.
 
-    headings.forEach(function (h) { observer.observe(h); });
-    setActive(headings[0].id);
+       This used to ask an IntersectionObserver which headings sat inside a thin
+       band and only moved the highlight while one did. Any section taller than
+       the band — which is most of them — scrolled its heading straight through,
+       leaving the highlight stranded on the section before it for the whole
+       read. Position beats intersection here: there is always a last heading
+       above the line, so there is always an answer. */
+    function currentId() {
+      var navH = parseFloat(getComputedStyle(document.documentElement)
+        .getPropertyValue('--nav-h')) || 60;
+      /* 8px past the headings' own scroll-margin-top, so clicking a TOC link
+         lands its heading above the line rather than a pixel under it. */
+      var line = navH + 24;
+      var id = headings[0].id;
+      for (var i = 0; i < headings.length; i++) {
+        if (headings[i].getBoundingClientRect().top > line) break;
+        id = headings[i].id;
+      }
+      /* At the very bottom the last section can be too short to ever reach the
+         line, and it is still the one on screen. */
+      var doc = document.documentElement;
+      if (window.pageYOffset + window.innerHeight >= doc.scrollHeight - 2) {
+        id = headings[headings.length - 1].id;
+      }
+      return id;
+    }
+
+    var ticking = false;
+    var sync = function () {
+      setActive(currentId());
+      ticking = false;
+    };
+    var onScroll = function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(sync);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    sync();
   })();
 
   /* --- Copy buttons ------------------------------------------------------ */
