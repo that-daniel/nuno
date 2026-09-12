@@ -15,10 +15,18 @@ is fetched until a reader scrolls to them.
 ![Best Practices 100](https://img.shields.io/badge/Best_Practices-100-2ea043)
 ![SEO 100](https://img.shields.io/badge/SEO-100-2ea043)
 
-PageSpeed Insights against the demo site, mobile, September 2026. These are
-static badges recording one run, not a live check — if you are relying on the
-numbers, measure your own site: the score moves with your content, images and
-host, not just the theme.
+Lighthouse 12.8.2, mobile, against the [demo site](https://that-daniel.github.io/nuno/),
+September 2026. These are static badges recording one run, not a live check.
+Reproduce it yourself:
+
+```sh
+npx lighthouse https://that-daniel.github.io/nuno/ \
+  --only-categories=performance,accessibility,best-practices,seo \
+  --form-factor=mobile --screenEmulation.mobile
+```
+
+Measure your own site before relying on the numbers: the score moves with your
+content, images and host, not just the theme.
 
 Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 

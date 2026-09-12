@@ -50,6 +50,10 @@ upgrades without touching its config renders exactly as it did on 0.1.0.
   spelled out.
 - **Footnote styling** for Goldmark's markup, including a `:target` mark.
 - **`params.readingProgress`** — an optional scroll bar on posts.
+- **Releases.** Versions are git tags; pushing a `vX.Y.Z` tag publishes a GitHub
+  Release from the matching changelog section. A `go.mod` makes the module path
+  explicit, so `hugo mod get github.com/that-daniel/nuno@vX.Y.Z` resolves to the
+  tag rather than to a timestamped pseudo-version.
 - **Optional giscus comments.** Off unless configured, rendered on posts only,
   disabled per page with `comments: false`, and never printed. The script is not
   requested until the reader scrolls to it, so enabling comments costs nothing
