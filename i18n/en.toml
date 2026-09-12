@@ -122,6 +122,9 @@ other = "by {{ .name }}"
 [tagged]
 other = "Tagged · {{ .tags }}"
 
+[linkToSection]
+other = "Link to this section"
+
 [seriesLabel]
 other = "Series"
 

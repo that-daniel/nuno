@@ -641,6 +641,26 @@ a:hover { color: var(--accent); }
 .callout__body > *:last-child { margin-bottom: 0; }
 .callout__body p + p { margin-top: 10px; }
 
+/* --- Heading anchors ---------------------------------------------------- */
+/* Hidden until the heading is hovered or the link is focused. Opacity rather
+   than display so the heading's layout never shifts when it appears. */
+.heading-anchor {
+  margin-left: 0.4em;
+  color: var(--accent);
+  font-weight: 800;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+/* Drawn here, not in the markup: as DOM text it would leak into .Plain and so
+   into the summaries the theme uses for excerpts. */
+.heading-anchor::after { content: '#'; }
+.prose :is(h2, h3, h4):hover .heading-anchor,
+.heading-anchor:focus-visible { opacity: 1; }
+/* Coarse pointers have no hover, so an always-hidden link is unreachable. */
+@media (hover: none) {
+  .heading-anchor { opacity: 0.45; }
+}
+
 /* --- Series navigation -------------------------------------------------- */
 .series {
   display: flex;
