@@ -12,6 +12,27 @@ always a minor bump at least.
 
 Nothing yet.
 
+## 0.2.1 — 2026-09-12
+
+No breaking changes, but **one visible behaviour change**: the "Updated …"
+byline added in 0.2.0 is now off by default. If you were relying on it, set
+`params.showLastmod: true`.
+
+### Fixed
+
+- **The "Updated …" byline no longer fires on commit noise.** It is now behind
+  `params.showLastmod`, off by default. Hugo's `.Lastmod` is not a claim that
+  the author revised anything: with `enableGitInfo`, the default
+  `frontmatter.lastmod` resolves `:git` first, so it is the last commit that
+  touched the file. On a site whose posts were bulk-imported, 0.2.0 told readers
+  every one of them had been updated on the import date. The README now explains
+  how to reorder `frontmatter.lastmod` if you want the line to mean author
+  intent. `article:modified_time` and JSON-LD `dateModified` are unchanged.
+- **A site-wide `comments: false` now works.** The giscus partial read
+  `.Params.comments`, which is page front matter only, so setting it in site
+  params did nothing. It now uses `.Param`, which falls back page → site, with a
+  page still able to override.
+
 ## 0.2.0 — 2026-09-12
 
 No breaking changes: every addition below is opt-in or additive, and a site that

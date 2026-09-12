@@ -10,14 +10,20 @@
        an empty box and no explanation — so an incomplete block warns loudly at
        build time and renders nothing rather than shipping that.
 
-       Per-page `comments: false` in front matter turns it off for one page.
+       `comments: false` turns them off — in front matter for one page, or in
+       site params for the whole site.
 
        Takes the page as its argument. */ -}}
 
 {{- $s := .Site -}}
 {{- $g := $s.Params.giscus -}}
 
-{{- if and $g (ne (.Params.comments | default true) false) -}}
+{{- /* .Param, not .Params: it falls back from the page to the site, so a site
+       wide `comments: false` turns them off everywhere and a page can still
+       override. .Params would have read page front matter only, and a site-wide
+       switch would have done nothing. */ -}}
+{{- $enabled := .Param "comments" -}}
+{{- if and $g (ne $enabled false) -}}
   {{- $missing := slice -}}
   {{- range (slice "repo" "repoId" "category" "categoryId") -}}
     {{- if not (index $g .) }}{{ $missing = $missing | append . }}{{ end -}}
