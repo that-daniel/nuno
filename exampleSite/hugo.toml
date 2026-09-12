@@ -65,6 +65,9 @@ buildExpired = false
 
   # --- home ----------------------------------------------------------------
   postsOnHome = 6
+  # grid (default) | ledger | timeline. The demo ships four posts, so `grid`
+  # shows a row of three plus one — swap this to see how the other two handle it.
+  homeStyle = "grid"
   masthead = 'Minimal<span class="accent">,</span><br>dark<br>by default.'
   mainSections = ["posts"]
   DateFormat = "2 January 2006"

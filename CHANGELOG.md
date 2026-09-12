@@ -5,6 +5,15 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
 
 ## Unreleased
 
+### Added
+
+- **`params.homeStyle` — three home page list styles.** `grid` (the default,
+  unchanged), `ledger` (numbered full-width rows) and `timeline` (grouped by
+  year with dates in a left rail). Each lives in `layouts/partials/home/`, so a
+  site can override one without forking `index.html`. An unrecognised value
+  warns and falls back to `grid`. Existing sites need no change: with the param
+  unset the home page renders exactly as before.
+
 ### Changed
 
 - **`min_version` raised from 0.146.0 to 0.158.0.** The theme now uses

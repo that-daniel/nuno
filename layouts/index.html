@@ -5,6 +5,15 @@
 {{- $n := int ($s.Params.postsOnHome | default 6) -}}
 {{- $recent := first $n $posts -}}
 
+{{- /* Home style. Unknown values fall back to the grid rather than rendering an
+       empty page — a typo in hugo.toml should cost a warning, not the home. */ -}}
+{{- $styles := slice "grid" "ledger" "timeline" -}}
+{{- $style := $s.Params.homeStyle | default "grid" -}}
+{{- if not (in $styles $style) -}}
+  {{- warnf "nuno: unknown params.homeStyle %q, falling back to \"grid\" (one of: %s)" $style (delimit $styles ", ") -}}
+  {{- $style = "grid" -}}
+{{- end -}}
+
 {{- /* Where "Archive · N" points. Prefer a real /archives/ page. */ -}}
 {{- $archive := "" -}}
 {{- with $s.GetPage "/archives" }}{{ $archive = .RelPermalink }}{{ else }}
@@ -34,19 +43,7 @@
     {{- end }}
   </div>
 
-  <div class="cards">
-    {{- range $i, $p := $recent }}
-      <a class="card" href="{{ $p.RelPermalink }}">
-        <span class="card__meta">
-          <span class="card__num">{{ printf "%02d" (add $i 1) }}</span>
-          <span>{{ $p.Date.Format "Jan 2, 2006" }}{{ if $p.ReadingTime }}<span class="nuno-mobile-mins"> · {{ i18n "minutes" (dict "count" $p.ReadingTime) }}</span>{{ end }}</span>
-        </span>
-        <span class="card__title">{{ $p.Title }}</span>
-        {{- with partial "excerpt.html" $p }}<span class="card__excerpt">{{ . }}</span>{{ end }}
-        <span class="card__read">{{ i18n "minutesRead" (dict "count" $p.ReadingTime) }}</span>
-      </a>
-    {{- end }}
-  </div>
+  {{ partial (printf "home/%s.html" $style) (dict "recent" $recent "archive" $archive) }}
 
   {{- with $archive }}
     <a class="archive-link" href="{{ . }}">{{ i18n "archiveCountArrow" (dict "count" (len $posts)) }}</a>

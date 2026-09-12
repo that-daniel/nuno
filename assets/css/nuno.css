@@ -276,6 +276,105 @@ a:hover { color: var(--accent); }
 .nuno-mobile-mins { display: none; }
 .archive-link { font-size: 14px; font-weight: 800; color: var(--accent); display: none; }
 
+/* --- Home style: ledger ------------------------------------------------ */
+/* Full-width numbered rows. The visible counter duplicates the <ol> position,
+   so it is decoration and stays out of the accessibility tree. */
+/* The reset zeroes list margin but not padding, so clear the indent or the
+   rows hang 40px right of the masthead and section head above them. */
+.ledger { list-style: none; counter-reset: ledger; padding: 0; }
+.ledger__item { counter-increment: ledger; }
+.ledger__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 24px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.ledger__item:last-child .ledger__row { border-bottom: 1px solid var(--line); }
+.ledger__row::before {
+  content: counter(ledger, decimal-leading-zero);
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.ledger__row:hover { color: inherit; }
+.ledger__row:hover .ledger__title { color: var(--accent); }
+.ledger__row:hover .ledger__arrow { transform: translateX(4px); }
+.ledger__title {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+}
+.ledger__meta {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ledger__arrow {
+  color: var(--accent);
+  font-weight: 800;
+  transition: transform 0.18s ease;
+}
+
+/* --- Home style: timeline ---------------------------------------------- */
+/* Years label a left rail; posts hang off it. The rule lives on the list so it
+   stops at the last post of a year instead of running into the next. */
+.timeline { display: flex; flex-direction: column; gap: 40px; }
+.timeline__group {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.timeline__year {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  padding-top: 14px;
+}
+.timeline__list {
+  list-style: none;
+  border-left: 1px solid var(--line);
+  padding-left: 28px;
+}
+.timeline__row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 20px;
+  padding: 14px 0;
+}
+.timeline__row:hover { color: inherit; }
+.timeline__row:hover .timeline__title { color: var(--accent); }
+.timeline__item + .timeline__item .timeline__row { border-top: 1px solid var(--line); }
+.timeline__date {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.timeline__title {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+}
+.timeline__mins {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 /* --- Footer ------------------------------------------------------------ */
 .foot {
   display: flex;
@@ -1188,6 +1287,10 @@ a:hover { color: var(--accent); }
   .masthead__title { font-size: 84px; }
   .typer__line, .typer__ghost { font-size: 24px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 32px; }
+  .ledger__row { gap: 18px; }
+  .ledger__title { font-size: 20px; }
+  .timeline__group { grid-template-columns: 92px minmax(0, 1fr); gap: 18px; }
+  .timeline__list { padding-left: 22px; }
   .post__header, .post__body { grid-template-columns: minmax(0, 1fr) 260px; gap: 32px; }
   .post__title { font-size: 52px; }
   .about { grid-template-columns: minmax(0, 1fr) 320px; gap: 48px; }
@@ -1244,6 +1347,28 @@ a:hover { color: var(--accent); }
   .nuno-mobile-mins { display: inline; }
   .cards .card:nth-child(n + 5) { display: none; } /* 4 posts on mobile */
   .archive-link { display: inline-block; margin-top: 28px; }
+
+  /* Ledger: number and title on one line, meta beneath. The arrow is the
+     hover affordance of a pointer device, so it goes. */
+  .ledger__row {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4px 12px;
+    padding: 14px 0;
+  }
+  .ledger__title { font-size: 18px; }
+  .ledger__meta { grid-column: 2; font-size: 12px; }
+  .ledger__arrow { display: none; }
+  .ledger__item:nth-child(n + 5) { display: none; } /* 4 posts on mobile */
+
+  /* Timeline: the rail cannot earn its width here, so the year becomes a
+     heading above its posts. */
+  .timeline { gap: 28px; }
+  .timeline__group { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .timeline__year { padding-top: 0; font-size: 13px; }
+  .timeline__list { border-left: 0; padding-left: 0; }
+  .timeline__row { grid-template-columns: 58px minmax(0, 1fr); gap: 14px; padding: 12px 0; }
+  .timeline__title { font-size: 18px; }
+  .timeline__mins { display: none; }
 
   /* Footer */
   /* Mobile footer: nav links, then the ground toggle. No copyright line. */

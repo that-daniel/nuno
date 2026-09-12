@@ -18,7 +18,7 @@ Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 ## Contents
 
 - [Install](#install) · [Configuration](#configuration) · [Navigation](#navigation)
-- [Theme and ground](#theme-and-ground) · [Accents and contrast](#accents-and-contrast)
+- [Home styles](#home-styles) · [Theme and ground](#theme-and-ground) · [Accents and contrast](#accents-and-contrast)
 - [Content](#content): [posts](#posts), [masthead](#typed-masthead),
   [callouts](#callouts), [blockquotes](#blockquote-attribution),
   [images](#images), [certifications](#certifications), [books](#books),
@@ -75,6 +75,7 @@ params:
   brand: "example.com"              # nav wordmark; defaults to the baseURL host
   tagline: "Notes, since 2024."
   postsOnHome: 6
+  homeStyle: "grid"     # grid | ledger | timeline — see "Home styles" below
   masthead: 'Faith,<br>technology<span class="accent">,</span><br>and life.'
   # About heading: use spans, not <br> — they stack on desktop and reflow to one
   # sentence on mobile. A <br> cannot do both.
@@ -143,6 +144,33 @@ heading `scroll-margin-top`); change one value and the rest follow.
 
 On mobile only the menu entry with `identifier: about` stays in the nav bar; the
 rest move to the footer.
+
+## Home styles
+
+`params.homeStyle` picks how the home page lists recent posts. The masthead,
+section head and archive link are the same in all three; only the list changes.
+
+| Value      | Looks like                                   | Suits                                            |
+| ---------- | -------------------------------------------- | ------------------------------------------------ |
+| `grid`     | Three columns of preview cards (the default) | A steady cadence and a post count divisible by 3 |
+| `ledger`   | Numbered full-width rows, one post per line  | Any post count — it never leaves a partial row   |
+| `timeline` | Grouped by year, dates in a left rail        | A long back catalogue, where the history is part of the point |
+
+An unrecognised value logs a warning and falls back to `grid`.
+
+Two things worth knowing before you switch:
+
+- **The grid leaves a ragged last row** when your post count is not a multiple
+  of three — four posts render as a row of three plus one third-width card. It
+  is not broken, but it is the reason `ledger` exists. Below 1100px the grid
+  drops to two columns and below 760px to one, so this only shows on desktop.
+- **`timeline` needs more than one year to earn its rail.** With a single year
+  it renders as one labelled group, which is tidy but no better than `ledger`.
+
+All three use the same `postsOnHome` limit, and all three truncate to four
+entries on mobile with the archive link beneath — except `timeline`, which shows
+every post it was given, since cutting a year in half tells a lie about the
+history.
 
 ## Theme and ground
 
