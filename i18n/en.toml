@@ -114,6 +114,14 @@ other = "{{ .count }} min"
 one = "{{ .count }} min read"
 other = "{{ .count }} min read"
 
+# --- Comments ---------------------------------------------------------------
+
+[comments]
+other = "Comments"
+
+[commentsNoScript]
+other = "Comments need JavaScript, and are hosted on GitHub Discussions via giscus."
+
 # --- Post -------------------------------------------------------------------
 
 [onThisPage]

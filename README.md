@@ -5,8 +5,9 @@ ground, one accent colour, a cycling typed masthead, ⌘K client-side search, a
 sticky table of contents, copy buttons on code, and optional sections for
 certifications, books and a resume.
 
-First paint is ~50 KB gzipped over 4 requests, with no third-party connections
-at all.
+First paint is ~50 KB gzipped over 4 requests, with no third-party connections.
+Optional [comments](#comments) are the single exception, and even then nothing
+is fetched until a reader scrolls to them.
 
 [![Build](https://github.com/that-daniel/nuno/actions/workflows/build.yml/badge.svg)](https://github.com/that-daniel/nuno/actions/workflows/build.yml)
 ![Performance 100](https://img.shields.io/badge/Lighthouse_Performance-100-2ea043)
@@ -33,7 +34,8 @@ Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 - [Content](#content): [posts](#posts), [series](#series),
   [related posts](#related-posts), [reading progress](#reading-progress),
   [footnotes](#footnotes), [printing](#printing),
-  [structured data](#structured-data), [masthead](#typed-masthead),
+  [structured data](#structured-data), [comments](#comments),
+  [masthead](#typed-masthead),
   [callouts](#callouts), [blockquotes](#blockquote-attribution),
   [images](#images), [certifications](#certifications), [books](#books),
   [resume](#resume), [about](#about-and-the-portrait)
@@ -330,6 +332,44 @@ of contents, progress bar and every pointer-only control are dropped, and
 external links have their URL printed after them. In-page links do not:
 "(#the-symptom)" on paper helps nobody.
 
+### Comments
+
+Off unless configured. [giscus](https://giscus.app) puts comments in your
+repository's GitHub Discussions:
+
+```yaml
+params:
+  giscus:
+    repo: "you/your-repo"
+    repoId: "R_..."
+    category: "Announcements"
+    categoryId: "DIC_..."
+    mapping: "pathname"       # default
+    inputPosition: "bottom"   # or "top"
+    themeLight: "light"       # giscus theme names, not nuno's
+    themeDark: "dark"
+    lang: ""                  # defaults to the site language
+```
+
+All four ids are required; get them from [giscus.app](https://giscus.app) after
+installing the giscus app on the repository. An incomplete block warns at build
+time and renders nothing — giscus itself fails silently with a partial config,
+leaving an empty box and no explanation, which is worse than no comments.
+
+Two things the theme does on your behalf:
+
+- **Nothing is requested until the reader reaches the comments.** This is the
+  theme's only third-party connection, and it is the reader's bandwidth and the
+  reader's data, so a visit that never scrolls to the bottom costs nothing. It
+  also means enabling comments does not move your load-time numbers for readers
+  who never get there.
+- **The embed follows the theme toggle.** Switching light/dark re-themes the
+  comments in place rather than leaving a white box on a dark page.
+
+Comments appear on posts only — never on the About page, `/search/`, or other
+standalone pages — and `comments: false` in front matter turns them off for one
+page. They are never printed.
+
 ### Structured data
 
 Posts carry JSON-LD `BlogPosting`, the home page `WebSite`. Nothing else does:
@@ -583,7 +623,10 @@ On a desktop connection the same pages paint in ~150–360 ms. Add your host's
 real TTFB (typically 30–150 ms from a CDN); the test server was local.
 
 Four requests is the whole page: HTML, font, JS, favicon — CSS is inlined, so it
-costs no request. There are no third-party connections at all.
+costs no request. There are no third-party connections, and these figures are
+measured with comments off, which is the default. Turning them on adds none of
+these numbers for a reader who does not scroll to the bottom, because giscus is
+not fetched until they do.
 
 What keeps it fast: one preloaded font file with `font-display: swap`; CSS
 inlined in `<head>`; ~2 KB of deferred JS with search fetched only on first use;

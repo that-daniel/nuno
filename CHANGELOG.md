@@ -38,6 +38,13 @@ it is a theme, and the meaningful contract is `min_version` in `theme.toml`.
   spelled out.
 - **Footnote styling** for Goldmark's markup, including a `:target` mark.
 - **`params.readingProgress`** — an optional scroll bar on posts.
+- **Optional giscus comments.** Off unless configured, rendered on posts only,
+  disabled per page with `comments: false`, and never printed. The script is not
+  requested until the reader scrolls to it, so enabling comments costs nothing
+  on a page view that never reaches the bottom — the theme's only third-party
+  connection, made as late as possible. The embed follows the light/dark toggle.
+  An incomplete config warns at build time rather than shipping the empty box
+  giscus renders for one.
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue and pull request
   templates, and Dependabot for the workflow actions.
 

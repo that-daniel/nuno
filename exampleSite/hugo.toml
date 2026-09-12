@@ -121,6 +121,18 @@ buildExpired = false
   # at the page rather than promising a download.
   resumeLabel = "View resume"
 
+  # --- comments ------------------------------------------------------------
+  # Off here on purpose: the demo's pitch is no third-party connections, and
+  # loading giscus on it would make that untrue. Uncomment and fill in all four
+  # ids from https://giscus.app to switch comments on. An incomplete block warns
+  # at build time and renders nothing.
+  #
+  # [params.giscus]
+  #   repo = "you/your-repo"
+  #   repoId = "R_..."
+  #   category = "Announcements"
+  #   categoryId = "DIC_..."
+
   [params.author]
     name = "that-daniel"
 
