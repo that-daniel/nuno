@@ -122,6 +122,7 @@ params:
   profileBio: ""          # profile header bio; defaults to params.description
   relatedCount: 3         # "Related reading" entries under a post
   readingProgress: false  # thin accent bar at the top of a post
+  showLastmod: false      # "Updated …" byline; read the caveat under Posts
   masthead: 'Faith,<br>technology<span class="accent">,</span><br>and life.'
   # About heading: use spans, not <br> — they stack on desktop and reflow to one
   # sentence on mobile. A <br> cannot do both.
@@ -283,11 +284,30 @@ the summary when there is no `description`. The first `categories` entry becomes
 the accent kicker above the title. `showToc: false` hides the table of contents
 on a page that would otherwise get one.
 
-`lastmod` adds an "Updated …" line to the byline and an `article:modified_time`.
-It is compared with `date` by calendar **day**, not instant — Hugo defaults
-`lastmod` to `date`, and under `enableGitInfo` it is the commit time, which is
-hours off the front matter date on a first commit. Only a different day counts
-as an update.
+`params.showLastmod: true` adds an "Updated …" line to the byline, when
+`lastmod` falls on a different calendar day from `date`.
+
+**It is off by default, and the reason matters if you use `enableGitInfo`.**
+Hugo's `.Lastmod` is not a statement that you revised anything. With
+`enableGitInfo` the default `frontmatter.lastmod` resolves `:git` *first*, so
+`.Lastmod` is whenever the file was last committed — a typo fix, a reformat, or
+the one commit that imported an archive. Turn this on for a site whose posts
+were bulk-imported and every one of them will claim it was updated on the day
+you imported it.
+
+If you want the line to mean "the author revised this", put `lastmod` ahead of
+`:git` so your front matter wins:
+
+```yaml
+frontmatter:
+  lastmod: ["lastmod", ":git", ":fileModTime", ":default"]
+```
+
+Then only posts that actually set `lastmod` show the line.
+
+`article:modified_time` and the JSON-LD `dateModified` always use `.Lastmod`
+regardless of this param — a freshness hint for machines is harmless, whereas a
+sentence to a reader that is not true is not.
 
 Every markdown heading gets a `#` link to itself, shown on hover. The id is
 Hugo's own anchor, the same one the table of contents targets.
@@ -390,8 +410,9 @@ Two things the theme does on your behalf:
   comments in place rather than leaving a white box on a dark page.
 
 Comments appear on posts only — never on the About page, `/search/`, or other
-standalone pages — and `comments: false` in front matter turns them off for one
-page. They are never printed.
+standalone pages. `comments: false` turns them off: in front matter for a single
+page, or in site `params` for the whole site, with front matter winning. They are
+never printed.
 
 ### Structured data
 

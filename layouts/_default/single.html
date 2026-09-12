@@ -39,11 +39,16 @@
   <div class="post__meta">
     <span>{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
     {{- if .ReadingTime }}<span>{{ i18n "minutesRead" (dict "count" .ReadingTime) }}</span>{{ end }}
-    {{- /* Same calendar-day test the head uses: Lastmod defaults to Date, and
-           under enableGitInfo it is the commit time, which is hours off the
-           front matter date on the first commit. Only a different day is an
-           update worth telling the reader about. */ -}}
-    {{- if ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02") }}
+    {{- /* Opt-in, because Hugo's .Lastmod is not a statement that the author
+           revised anything. With enableGitInfo the default frontmatter.lastmod
+           puts :git first, so Lastmod is the last commit that touched the file
+           — a typo fix, a reformat, or the single commit that imported an
+           archive. A site whose posts were bulk-imported would otherwise tell
+           readers that every one of them was revised on the same day.
+
+           Still compared by calendar day: even when it is meaningful, a commit
+           hours after publication is not an update. */ -}}
+    {{- if and (.Site.Params.showLastmod | default false) (ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02")) }}
       <span class="post__meta-updated">{{ i18n "updatedOn" (dict "date" (.Lastmod.Format (.Site.Params.DateFormat | default "January 2, 2006"))) }}</span>
     {{- end }}
     {{- with $author }}<span class="post__meta-author">{{ i18n "byAuthor" (dict "name" .) }}</span>{{ end }}
