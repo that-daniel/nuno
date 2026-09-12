@@ -1,0 +1,51 @@
+name: build
+
+# Catches a broken template before anyone clones it. The exampleSite is fully
+# self-contained, so this is the whole test suite the theme has.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The oldest version theme.toml claims, and the newest release. If the
+        # floor build breaks, either fix it or raise min_version — do not just
+        # drop this leg.
+        hugo: ["0.146.0", "latest"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Hugo (extended)
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: ${{ matrix.hugo }}
+          extended: true
+
+      - name: Build exampleSite
+        working-directory: exampleSite
+        run: |
+          hugo --themesDir ../.. \
+               --printI18nWarnings \
+               --printPathWarnings \
+               --logLevel info
+
+      - name: Fail on build warnings
+        working-directory: exampleSite
+        run: |
+          # Hugo exits 0 on WARN, so a missing i18n key or an unresolvable asset
+          # path would otherwise sail through. Treat any WARN as a failure.
+          hugo --themesDir ../.. --printI18nWarnings --printPathWarnings 2>&1 \
+            | tee /tmp/hugo.log
+          if grep -q "^WARN" /tmp/hugo.log; then
+            echo "::error::Hugo emitted warnings — see the log above."
+            exit 1
+          fi

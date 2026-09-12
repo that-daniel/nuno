@@ -1,0 +1,76 @@
+{{ define "wrapclass" }}{{ if partial "isAbout.html" . }}wrap--about{{ else }}wrap--post{{ end }}{{ end }}
+{{ define "main" }}
+{{- if partial "isAbout.html" . -}}
+{{ partial "about.html" . }}
+{{- else -}}
+{{- $toc := .TableOfContents -}}
+{{- /* Hide the aside unless there is something worth navigating */ -}}
+{{- $headings := len (findRE "<li" $toc) -}}
+{{- $showToc := and (ge $headings 2) (ne (.Params.showToc | default true) false) -}}
+
+<header class="post__header">
+  <div class="post__headline">
+    {{- with (index (.Params.categories | default slice) 0) }}
+      <span class="kicker kicker--accent">{{ . }}</span>
+    {{- end }}
+    <h1 class="post__title">{{ .Title }}</h1>
+    {{- with .Description }}<p class="post__subtitle">{{ . }}</p>{{ end }}
+  </div>
+  {{- /* A standalone page such as /search/ or /subscribe/ has no date and no
+         real body; showing "January 1, 0001 · 0 min read · by …" on it looks
+         broken, so the byline only appears on dated pages. */ -}}
+  {{- if not .Date.IsZero }}
+  {{- $author := .Params.author | default (partial "author.html" .) -}}
+  <div class="post__meta">
+    <span>{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
+    {{- if .ReadingTime }}<span>{{ i18n "minutesRead" (dict "count" .ReadingTime) }}</span>{{ end }}
+    {{- with $author }}<span class="post__meta-author">{{ i18n "byAuthor" (dict "name" .) }}</span>{{ end }}
+  </div>
+  {{- end }}
+</header>
+
+<div class="post__body{{ if not $showToc }} post__body--wide{{ end }}">
+  <article class="prose" id="main">
+    {{ .Content }}
+  </article>
+
+  {{- if $showToc }}
+  <aside class="post__aside">
+    <span class="kicker">{{ i18n "onThisPage" }}</span>
+    <div class="toc" data-nuno-toc>{{ $toc }}</div>
+    {{- with .Params.tags }}
+      <span class="post__tagged">{{ i18n "tagged" (dict "tags" (delimit . ", ")) }}</span>
+    {{- end }}
+  </aside>
+  {{- end }}
+</div>
+
+{{- /* Stay inside the section: .Prev/.Next span every regular page, so a
+       post could otherwise link to a book. A section is ordered newest-first,
+       and NextInSection walks towards newer
+       (the opposite direction to .Next/.Prev — verified against real dates). */ -}}
+{{- /* Only chain pages that belong to a content section. Root-level pages like
+       /search/ and /resume/ are otherwise strung together as if they were a
+       series, which they are not. */ -}}
+{{- $sections := .Site.Params.mainSections | default (slice "posts") -}}
+{{- $inSection := and .Section (in $sections .Section) -}}
+{{- $older := cond $inSection .PrevInSection nil -}}
+{{- $newer := cond $inSection .NextInSection nil -}}
+{{- if or $older $newer }}
+<nav class="post__nav">
+  {{- with $older }}
+    <a class="post__nav-link" href="{{ .RelPermalink }}">
+      <span class="kicker">{{ i18n "older" }}</span>
+      <span class="post__nav-title">{{ .Title }}</span>
+    </a>
+  {{- end }}
+  {{- with $newer }}
+    <a class="post__nav-link post__nav-link--next" href="{{ .RelPermalink }}">
+      <span class="kicker">{{ i18n "newer" }}</span>
+      <span class="post__nav-title">{{ .Title }}</span>
+    </a>
+  {{- end }}
+</nav>
+{{- end }}
+{{- end }}
+{{ end }}

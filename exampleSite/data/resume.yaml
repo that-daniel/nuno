@@ -1,0 +1,94 @@
+# Drives layouts/_default/resume.html. Every top-level key is optional — omit one
+# and its section disappears rather than rendering empty. Placeholder data.
+#
+# `pdf` is resolved with relURL, so "resume.pdf" means static/resume.pdf. It is
+# left commented out here because this demo ships no PDF; uncomment it and the
+# Download button appears.
+
+name: "A. Placeholder"
+role: "Platform Engineer"
+summary: >-
+  Eight years building and running infrastructure that other engineers depend on.
+  Happiest at the boundary between a platform and the people using it, and
+  generally the one asking why a step exists at all.
+location: "Somewhere, Earth"
+# pdf: "resume.pdf"
+
+contact:
+  - label: "Email"
+    value: "hello@example.com"
+    url: "mailto:hello@example.com"
+  - label: "GitHub"
+    value: "github.com/that-daniel/nuno"
+    url: "https://github.com/that-daniel/nuno"
+  - label: "Site"
+    value: "example.com"
+    url: "https://example.com"
+
+# The figure row across the top. Three or four reads best; more than that and
+# none of them land.
+highlights:
+  - figure: "8y"
+    label: "Building platforms"
+  - figure: "40+"
+    label: "Services migrated"
+  - figure: "99.98%"
+    label: "Availability held"
+
+achievements:
+  - title: "Halved deploy time"
+    body: >-
+      Replaced a bespoke release script with a declarative pipeline, taking the
+      median deploy from 22 minutes to 9 and removing the one person who
+      understood it from the critical path.
+  - title: "Cut spend by a third"
+    body: >-
+      Found and switched off what nobody owned. Most of the saving was idle
+      capacity reserved for a peak that had moved two years earlier.
+
+experience:
+  - role: "Senior Platform Engineer"
+    company: "Example Corp"
+    from: "2022"
+    to: "Present"
+    current: true
+    bullets:
+      - "Own the deployment platform used by six product teams."
+      - "Introduced progressive delivery; rollbacks fell from hours to a minute."
+      - "Mentor two engineers, which is the part of the job that compounds."
+    stack: "Kubernetes · Terraform · Go · GitHub Actions"
+  - role: "Infrastructure Engineer"
+    company: "Second Example Ltd"
+    from: "2019"
+    to: "2022"
+    bullets:
+      - "Migrated a monolith's data layer with no planned downtime."
+      - "Built the observability stack the on-call rota still runs on."
+    stack: "AWS · Python · Prometheus · Grafana"
+  - role: "Systems Administrator"
+    company: "Third Example GmbH"
+    from: "2017"
+    to: "2019"
+    bullets:
+      - "Ran the build fleet, and learned why boring infrastructure wins."
+    stack: "Linux · Ansible · Bash"
+
+skills:
+  - group: "Platforms"
+    items: "Kubernetes, AWS, Azure, bare metal when it is genuinely cheaper"
+  - group: "Languages"
+    items: "Go, Python, Bash, enough SQL to be dangerous"
+  - group: "Operations"
+    items: "Terraform, Prometheus, Grafana, OpenTelemetry"
+  - group: "Practice"
+    items: "Incident review, capacity planning, writing things down"
+
+education:
+  - school: "Example University"
+    award: "BSc Computer Science"
+    years: "2013 — 2017"
+
+languages:
+  - "English"
+  - "Portuguese"
+  - "A little German"

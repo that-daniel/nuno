@@ -1,0 +1,52 @@
+{{ define "wrapclass" }}wrap--certs{{ end }}
+{{ define "main" }}
+{{- $books := .Pages -}}
+
+{{- /* One grid, not one row per status: a single "Reading" book stranded on its
+       own row wasted a lot of space. Currently-reading books lead and are
+       marked with an accent ring and badge instead. */ -}}
+{{- $reading := where $books "Params.bookMeta.status" "Reading" -}}
+{{- $read := where $books "Params.bookMeta.status" "!=" "Reading" -}}
+{{- $ordered := $reading | append $read -}}
+
+<header class="certs__header">
+  <span class="kicker kicker--accent">
+    {{ i18n "booksCount" (dict "count" (len $books)) }}
+    {{- with len $reading }}{{ if . }} · {{ i18n "booksInProgress" (dict "count" .) }}{{ end }}{{ end }}
+  </span>
+  <h1 class="page-title">{{ .Title | default (i18n "bookshelf") }}</h1>
+  {{- with .Content }}<div class="page-header__lead">{{ . }}</div>{{ end }}
+</header>
+
+<main id="main">
+  <div class="shelf">
+    {{- range $i, $b := $ordered }}
+      {{- $m := $b.Params.bookMeta | default dict }}
+      {{- $isReading := eq ($m.status | default "Read") "Reading" }}
+      {{- /* First row is above the fold and the covers are the content, so load
+             those eagerly; everything below stays lazy. */ -}}
+      {{- $loading := cond (lt $i 6) "eager" "lazy" }}
+      <a class="book-card{{ if $isReading }} is-reading{{ end }}" href="{{ $b.RelPermalink }}">
+        <span class="book-card__frame">
+          {{- with $m.coverImage }}
+            {{ partial "image.html" (dict "src" . "alt" (i18n "bookCoverAlt" (dict "title" $b.Title)) "class" "book-card__cover" "loading" $loading) }}
+          {{- else }}
+            <span class="book-card__cover book-card__cover--blank" aria-hidden="true"></span>
+          {{- end }}
+          {{- if $isReading }}<span class="book-card__badge">{{ i18n "bookReading" }}</span>{{ end }}
+        </span>
+        <span class="book-card__title">{{ $b.Title }}</span>
+        {{- /* Author and rating sit in a block pinned to the bottom of the card,
+               so both line up across a row however long the titles run. */ -}}
+        <span class="book-card__foot">
+          <span class="book-card__author">{{ $m.author | default "" }}</span>
+          <span class="book-card__rating"
+            {{- if $m.rating }} aria-label="{{ i18n "bookRated" (dict "rating" $m.rating) }}"{{ end }}>
+            {{- if $m.rating }}{{ partial "stars.html" $m.rating }}{{ end -}}
+          </span>
+        </span>
+      </a>
+    {{- end }}
+  </div>
+</main>
+{{ end }}

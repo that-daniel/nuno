@@ -1,0 +1,121 @@
+# nuno — exampleSite.
+#
+# This is a complete, self-contained demo site. Nothing here points outside the
+# repository, so it builds anywhere:
+#
+#   cd exampleSite && hugo server --themesDir ../..
+#
+# Copy this file to your own site root as a starting point. Every params entry
+# below is optional — the commented defaults are what you get if you omit it.
+
+baseURL = "https://that-daniel.github.io/nuno/"
+languageCode = "en-gb"
+title = "nuno"
+theme = "nuno"
+
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+[pagination]
+  pagerSize = 20
+
+[taxonomies]
+  category = "categories"
+  series = "series"
+  tag = "tags"
+
+# JSON is the ⌘K search index and the theme needs it on the home page.
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[markup]
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 3
+    ordered = false
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.highlight]
+    # Class-based highlighting, so the theme's palettes drive the colours.
+    noClasses = false
+
+[params]
+  # --- palette -------------------------------------------------------------
+  accent = "#e8b04b"      # dark-mode accent: mustard (default)
+  accentLight = ""        # empty = derive a darkened variant that clears 4.5:1
+  ground = "brown"        # brown | green
+  defaultTheme = "auto"   # dark | light | auto (auto follows the OS)
+
+  # --- identity ------------------------------------------------------------
+  brand = "nuno"
+  # No `favicon` here on purpose: with it unset the theme probes assets/ for
+  # favicon.{ico,svg,png} and finds assets/favicon.png. Set params.favicon only
+  # for a file in static/ — it is resolved with relURL, not through the asset
+  # pipeline. If neither exists the theme emits no icon link at all, which beats
+  # a hardcoded /favicon.ico 404 on every page.
+  ogImage = "images/example-figure.png"
+  description = "A minimalist, dark-first Hugo theme. Nunito only, four palettes, no third-party requests."
+  tagline = "A Hugo theme, demonstrating itself."
+  copyright = "© 2026 · MIT licensed"
+
+  # params.portrait is deliberately unset so the About page shows the empty
+  # portrait frame — set it to an image under assets/ or static/ to fill it.
+
+  # --- home ----------------------------------------------------------------
+  postsOnHome = 6
+  masthead = 'Minimal<span class="accent">,</span><br>dark<br>by default.'
+  mainSections = ["posts"]
+  DateFormat = "2 January 2006"
+
+  # --- sections ------------------------------------------------------------
+  # These two are only needed if you rename the sections. See the README: the
+  # directory can be called anything as long as its _index.md sets the matching
+  # `type`. The books section needs no param — nothing looks it up by name.
+  certsSection = "certs"
+  resumePath = "/resume"
+  certsKicker = "example data"
+  certHighlights = ["Professional", "Associate", "Foundations"]
+  # Label on the About page's resume row. This demo ships no PDF, so it points
+  # at the page rather than promising a download.
+  resumeLabel = "View resume"
+
+  [params.author]
+    name = "that-daniel"
+
+  # The theme appends an RSS link itself, so do not list "rss" here — it would
+  # render the same link twice.
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/that-daniel/nuno"
+
+[menu]
+  [[menu.main]]
+    identifier = "posts"
+    name = "Writing"
+    url = "/posts/"
+    weight = 10
+  [[menu.main]]
+    identifier = "certs"
+    name = "Certs"
+    url = "/certs/"
+    weight = 20
+  [[menu.main]]
+    identifier = "books"
+    name = "Books"
+    url = "/books/"
+    weight = 30
+  [[menu.main]]
+    identifier = "resume"
+    name = "Resume"
+    url = "/resume/"
+    weight = 40
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 50
+
+[security.funcs]
+  getenv = ["^HUGO_", "^CI$"]

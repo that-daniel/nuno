@@ -1,0 +1,47 @@
+{{ define "wrapclass" }}wrap--post{{ end }}
+{{ define "main" }}
+{{- $m := .Params.certMeta -}}
+{{- $active := eq (lower ($m.status | default "")) "active" -}}
+
+<header class="post__header">
+  <div class="post__headline">
+    {{- with $m.issuer }}<span class="kicker kicker--accent">{{ . }}</span>{{ end }}
+    <h1 class="post__title">{{ .Title }}</h1>
+  </div>
+  <div class="post__meta">
+    <span>{{ partial "cert-date.html" . }}</span>
+    <span>{{ $m.status | default (i18n "certStatusActive") }}</span>
+    {{- with $m.level }}<span>{{ . }}</span>{{ end }}
+  </div>
+</header>
+
+<main id="main" class="cert-single">
+  {{ partial "cert-badge.html" (dict "src" $m.badgeImage "alt" .Title "size" 120 "class" "cert-single__badge") }}
+
+  <div>
+    <div class="prose">{{ .Content }}</div>
+
+    <dl class="cert-single__facts">
+      {{- with $m.issuer }}<div class="cert-single__fact"><dt>{{ i18n "certIssuer" }}</dt><dd>{{ . }}</dd></div>{{ end }}
+      <div class="cert-single__fact"><dt>{{ i18n "certEarned" }}</dt><dd>{{ partial "cert-date.html" . }}</dd></div>
+      {{- with $m.expiryDate }}<div class="cert-single__fact"><dt>{{ i18n "certExpires" }}</dt><dd>{{ (time .).Format "Jan 2006" }}</dd></div>{{ end }}
+      {{- with $m.credentialId }}<div class="cert-single__fact"><dt>{{ i18n "certCredentialId" }}</dt><dd>{{ . }}</dd></div>{{ end }}
+      <div class="cert-single__fact">
+        <dt>{{ i18n "certStatus" }}</dt>
+        <dd class="{{ if $active }}accent{{ end }}">{{ $m.status | default (i18n "certStatusActive") }}</dd>
+      </div>
+      {{- with $m.skills }}<div class="cert-single__fact"><dt>{{ i18n "certSkills" }}</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
+    </dl>
+
+    {{- with $m.credentialUrl }}
+      {{- /* Back-link goes to the configured certs section, not a hardcoded
+             /certs/ — see params.certsSection. */ -}}
+      {{- $section := $.Site.Params.certsSection | default "certs" -}}
+      <div class="btn-row" style="margin-top:28px">
+        <a class="btn btn--accent" href="{{ . }}" rel="noopener">{{ i18n "verifyCredential" }}</a>
+        <a class="btn btn--ghost" href="{{ (printf "%s/" $section) | relURL }}">{{ i18n "allCertifications" }}</a>
+      </div>
+    {{- end }}
+  </div>
+</main>
+{{ end }}

@@ -1,0 +1,29 @@
+{{ define "wrapclass" }}wrap--list{{ end }}
+{{ define "main" }}
+{{- $sections := .Site.Params.mainSections | default (slice "posts") -}}
+{{- $posts := where .Site.RegularPages "Type" "in" $sections -}}
+<header class="page-header">
+  <span class="kicker kicker--accent">{{ i18n "postsCount" (dict "count" (len $posts)) }}</span>
+  <h1 class="page-title">{{ .Title | default (i18n "archiveTitle") }}</h1>
+  {{- with .Content }}<div class="page-header__lead">{{ . }}</div>{{ end }}
+</header>
+
+<main id="main" class="certs__groups">
+  {{- range $posts.GroupByDate "2006" }}
+    <section class="certs__group">
+      <span class="kicker certs__issuer">{{ .Key }}</span>
+      <div class="rows" style="border-top:0">
+        {{- range .Pages }}
+          <a class="row" href="{{ .RelPermalink }}">
+            <span class="row__text">
+              <span class="row__title">{{ .Title }}</span>
+              {{- with partial "excerpt.html" . }}<span class="row__excerpt">{{ . }}</span>{{ end }}
+            </span>
+            <span class="row__meta">{{ .Date.Format "Jan 2" }}{{ if .ReadingTime }} · {{ i18n "minutes" (dict "count" .ReadingTime) }}{{ end }}</span>
+          </a>
+        {{- end }}
+      </div>
+    </section>
+  {{- end }}
+</main>
+{{ end }}

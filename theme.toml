@@ -1,0 +1,13 @@
+name = "nuno"
+license = "MIT"
+licenselink = "https://github.com/that-daniel/nuno/blob/main/LICENSE"
+description = "Minimalist, dark-first personal blog theme. Nunito only, warm brown or deep green ground, one accent colour, typed masthead, ⌘K search."
+homepage = "https://github.com/that-daniel/nuno"
+demosite = "https://that-daniel.github.io/nuno/"
+tags = ["blog", "minimal", "dark", "personal", "fast", "responsive", "accessibility"]
+features = ["dark mode", "client-side search", "table of contents", "code copy", "certifications", "bookshelf", "resume", "multilingual"]
+min_version = "0.146.0"
+
+[author]
+  name = "that-daniel"
+  homepage = "https://github.com/that-daniel"

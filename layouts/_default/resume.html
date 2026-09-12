@@ -1,0 +1,141 @@
+{{- /* Resume. Driven by data/resume.yaml rather than hand-written HTML, so it
+       renders as structured rows in the theme's own language instead of a wall
+       of prose. Falls back to page content if no data file is present. */ -}}
+{{ define "wrapclass" }}wrap--certs{{ end }}
+{{ define "main" }}
+{{- $r := .Site.Data.resume -}}
+
+{{- if not $r }}
+  <header class="page-header">
+    <h1 class="page-title">{{ .Title }}</h1>
+  </header>
+  <main class="prose" id="main">{{ .Content }}</main>
+{{- else }}
+
+<header class="cv__header">
+  <div class="cv__intro">
+    {{- with $r.role }}<span class="kicker kicker--accent">{{ . }}</span>{{ end }}
+    <h1 class="page-title cv__name">{{ $r.name | default .Title }}</h1>
+    {{- with $r.summary }}<p class="cv__summary">{{ . }}</p>{{ end }}
+  </div>
+
+  <div class="cv__aside">
+    {{- with $r.pdf }}
+      <a class="btn btn--accent cv__download" href="{{ . | relURL }}" download>
+        {{ i18n "downloadPdf" }} <span aria-hidden="true">↓</span>
+      </a>
+    {{- end }}
+    <dl class="cv__contact">
+      {{- with $r.location }}<div><dt>{{ i18n "resumeBasedIn" }}</dt><dd>{{ . }}</dd></div>{{ end }}
+      {{- range $r.contact }}
+        <div>
+          <dt>{{ .label }}</dt>
+          <dd>
+            {{- if .url -}}
+              <a href="{{ .url }}"
+                {{- if not (hasPrefix .url "mailto:") }} target="_blank" rel="noopener noreferrer"{{ end -}}
+              >{{ .value }}</a>
+            {{- else -}}
+              {{ .value }}
+            {{- end -}}
+          </dd>
+        </div>
+      {{- end }}
+    </dl>
+  </div>
+</header>
+
+{{- with $r.highlights }}
+<section class="cv__figures">
+  {{- range . }}
+    <div class="cv__figure">
+      <span class="cv__figure-num">{{ .figure }}</span>
+      <span class="cv__figure-label">{{ .label }}</span>
+    </div>
+  {{- end }}
+</section>
+{{- end }}
+
+<main id="main" class="cv">
+
+  {{- with $r.achievements }}
+  <section class="cv__section">
+    <span class="kicker cv__section-label">{{ i18n "resumeAchievements" }}</span>
+    <div class="cv__achievements">
+      {{- range . }}
+        <div class="cv__achievement">
+          <span class="cv__achievement-title">{{ .title }}</span>
+          <span class="cv__achievement-body">{{ .body }}</span>
+        </div>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  {{- with $r.experience }}
+  <section class="cv__section">
+    <span class="kicker cv__section-label">{{ i18n "resumeExperience" }}</span>
+    <div class="cv__roles">
+      {{- range . }}
+        <article class="cv__role">
+          <div class="cv__role-when">
+            <span class="cv__dates">{{ .from }} — {{ .to }}</span>
+            {{- if .current }}<span class="cv__now">{{ i18n "resumeCurrent" }}</span>{{ end }}
+          </div>
+          <div class="cv__role-what">
+            <h2 class="cv__role-title">{{ .role }}</h2>
+            <span class="cv__company">{{ .company }}</span>
+            {{- with .bullets }}
+              <ul class="cv__bullets">
+                {{- range . }}<li>{{ . }}</li>{{ end }}
+              </ul>
+            {{- end }}
+            {{- with .stack }}<p class="cv__stack">{{ . }}</p>{{ end }}
+          </div>
+        </article>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  {{- with $r.skills }}
+  <section class="cv__section">
+    <span class="kicker cv__section-label">{{ i18n "resumeSkills" }}</span>
+    <dl class="cv__skills">
+      {{- range . }}
+        <div class="cv__skill">
+          <dt>{{ .group }}</dt>
+          <dd>{{ .items }}</dd>
+        </div>
+      {{- end }}
+    </dl>
+  </section>
+  {{- end }}
+
+  {{- with $r.education }}
+  <section class="cv__section">
+    <span class="kicker cv__section-label">{{ i18n "resumeEducation" }}</span>
+    <div class="cv__rows">
+      {{- range . }}
+        <div class="cv__edu">
+          <span class="cv__edu-school">{{ .school }}</span>
+          <span class="cv__edu-award">{{ .award }}</span>
+          <span class="cv__edu-years">{{ .years }}</span>
+        </div>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  {{- with $r.languages }}
+  <section class="cv__section">
+    <span class="kicker cv__section-label">{{ i18n "resumeLanguages" }}</span>
+    <div class="terms">
+      {{- range . }}<span class="term-pill">{{ . }}</span>{{ end }}
+    </div>
+  </section>
+  {{- end }}
+
+</main>
+{{- end }}
+{{ end }}

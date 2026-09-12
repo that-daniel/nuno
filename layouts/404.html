@@ -1,0 +1,12 @@
+{{ define "wrapclass" }}wrap--404{{ end }}
+{{ define "main" }}
+<main class="notfound" id="main">
+  <span class="kicker kicker--accent">{{ i18n "notFoundKicker" }}</span>
+  <h1 class="notfound__title">{{ i18n "notFoundTitle" }}<span class="accent">.</span></h1>
+  <p class="notfound__text">{{ i18n "notFoundText" }}</p>
+  <div class="btn-row">
+    <a class="btn btn--accent" href="{{ "" | relURL }}">{{ i18n "backHome" }}</a>
+    <button class="btn btn--ghost" type="button" data-nuno-search-open>{{ i18n "search" }} <span data-nuno-kbd>⌘K</span></button>
+  </div>
+</main>
+{{ end }}

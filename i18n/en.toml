@@ -1,0 +1,313 @@
+# nuno — English UI strings.
+#
+# Copy this file to i18n/<lang>.toml in your own site (or in the theme, as a
+# pull request) and translate the values. Keys with `one` and `other` are
+# pluralised by Hugo from the `count` passed in; `{{ .count }}` and friends are
+# Go template placeholders and must survive translation.
+#
+# Nothing here is content — post titles, section titles and page headings all
+# come from your front matter. These are only the strings the theme itself
+# renders.
+
+# --- Chrome: nav, footer, skip link -----------------------------------------
+
+[skipToContent]
+other = "Skip to content"
+
+[searchPosts]
+other = "Search posts"
+
+[search]
+other = "Search"
+
+[switchColourTheme]
+other = "Switch colour theme"
+
+# Announced by the theme toggle. The label describes where the button goes,
+# not where you are, so it is the opposite of the current mode.
+[switchToLight]
+other = "Switch to light mode"
+
+[switchToDark]
+other = "Switch to dark mode"
+
+[switchToGreen]
+other = "Switch to green"
+
+[switchToBrown]
+other = "Switch to brown"
+
+[opensInNewTab]
+other = "(opens in a new tab)"
+
+# --- Search overlay ---------------------------------------------------------
+
+[searchPlaceholder]
+other = "Search"
+
+[searchEsc]
+other = "Esc"
+
+[searchCancel]
+other = "Cancel"
+
+[searchHintMove]
+other = "↑↓ move"
+
+[searchHintOpen]
+other = "↵ open"
+
+[searchHintClose]
+other = "esc close"
+
+# Rendered as: Nothing yet on <the query>.
+[searchEmptyTitle]
+other = "Nothing yet on"
+
+[searchEmptyHint]
+other = "Try a shorter word, or a different spelling."
+
+[searchBrowseAll]
+one = "Browse the one post →"
+other = "Browse all {{ .count }} posts →"
+
+# Result count above the list. Rendered by JavaScript, which cannot call i18n, so
+# these are handed to it pre-rendered via window.NUNO.i18n — and because Hugo
+# cannot pluralise a count it does not yet know, the two forms are separate keys
+# and `{n}` is substituted in the browser. Keep the `{n}` literal.
+[resultsCountOne]
+other = "{n} post"
+
+[resultsCountMany]
+other = "{n} posts"
+
+# The /search/ page. `{{ .key }}` is the ⌘K / Ctrl K badge and is HTML.
+[searchPageLead]
+other = "Search {{ .count }} posts by title, description or tag."
+
+[searchPageHint]
+other = "Press {{ .key }} anywhere on the site to open it."
+
+# --- Home -------------------------------------------------------------------
+
+[recentWriting]
+other = "Recent writing"
+
+[archiveCount]
+one = "Archive · {{ .count }}"
+other = "Archive · {{ .count }}"
+
+[archiveCountArrow]
+one = "Archive · {{ .count }} →"
+other = "Archive · {{ .count }} →"
+
+# --- Reading time -----------------------------------------------------------
+
+[minutes]
+one = "{{ .count }} min"
+other = "{{ .count }} min"
+
+[minutesRead]
+one = "{{ .count }} min read"
+other = "{{ .count }} min read"
+
+# --- Post -------------------------------------------------------------------
+
+[onThisPage]
+other = "On this page"
+
+[byAuthor]
+other = "by {{ .name }}"
+
+[tagged]
+other = "Tagged · {{ .tags }}"
+
+[older]
+other = "← Older"
+
+[newer]
+other = "Newer →"
+
+[pagerNewer]
+other = "← Newer"
+
+[pagerOlder]
+other = "Older →"
+
+# --- Lists and archive ------------------------------------------------------
+
+[postsCount]
+one = "{{ .count }} post"
+other = "{{ .count }} posts"
+
+[archiveTitle]
+other = "Archive"
+
+# --- Certifications ---------------------------------------------------------
+
+[credentialsCount]
+one = "{{ .count }} credential"
+other = "{{ .count }} credentials"
+
+[certifications]
+other = "Certifications"
+
+[certificationsCount]
+one = "Certifications · {{ .count }}"
+other = "Certifications · {{ .count }}"
+
+[certIssuer]
+other = "Issuer"
+
+[certEarned]
+other = "Earned"
+
+[certExpires]
+other = "Expires"
+
+[certCredentialId]
+other = "Credential ID"
+
+[certStatus]
+other = "Status"
+
+[certSkills]
+other = "Skills"
+
+# Default when a cert sets no explicit status.
+[certStatusActive]
+other = "Active"
+
+[verifyCredential]
+other = "Verify credential"
+
+[allCertifications]
+other = "All certifications"
+
+# --- Bookshelf --------------------------------------------------------------
+
+[booksCount]
+one = "{{ .count }} book"
+other = "{{ .count }} books"
+
+[booksInProgress]
+one = "{{ .count }} in progress"
+other = "{{ .count }} in progress"
+
+[bookshelf]
+other = "Bookshelf"
+
+# The bookMeta.status value the theme treats as "currently reading". Translating
+# this does NOT change what you write in front matter — keep that as "Reading".
+[bookReading]
+other = "Reading"
+
+[bookReadingNow]
+other = "Reading now"
+
+[bookAuthor]
+other = "Author"
+
+[bookPublisher]
+other = "Publisher"
+
+[bookPublished]
+other = "Published"
+
+[bookPages]
+other = "Pages"
+
+[bookIsbn]
+other = "ISBN"
+
+[bookStatus]
+other = "Status"
+
+[bookGenre]
+other = "Genre"
+
+[bookViewOnGoodreads]
+other = "View on Goodreads"
+
+[bookCoverAlt]
+other = "{{ .title }} — cover"
+
+[bookRated]
+other = "Rated {{ .rating }} out of 5"
+
+# --- Resume -----------------------------------------------------------------
+
+[resumeBasedIn]
+other = "Based in"
+
+[resumeAchievements]
+other = "Key achievements"
+
+[resumeExperience]
+other = "Experience"
+
+[resumeSkills]
+other = "Technical skills"
+
+[resumeEducation]
+other = "Education"
+
+[resumeLanguages]
+other = "Languages"
+
+[resumeCurrent]
+other = "Current"
+
+[downloadPdf]
+other = "Download PDF"
+
+# --- About ------------------------------------------------------------------
+
+[aboutCerts]
+other = "Certs"
+
+[aboutResume]
+other = "Resume"
+
+[aboutElsewhere]
+other = "Elsewhere"
+
+# --- 404 --------------------------------------------------------------------
+
+[notFoundKicker]
+other = "404"
+
+# The trailing full stop is rendered separately in the accent colour, so leave
+# it off the end of this string.
+[notFoundTitle]
+other = "This page wandered off"
+
+[notFoundText]
+other = "The link may be old, or the page may have moved. Try the search, or start at the beginning."
+
+[backHome]
+other = "Back home"
+
+# --- Shortcodes and code blocks ---------------------------------------------
+
+[calloutNote]
+other = "Note"
+
+[calloutTip]
+other = "Tip"
+
+[calloutWarning]
+other = "Warning"
+
+# Language label on a fence with no language set. Displayed uppercased by CSS.
+[codeLabel]
+other = "code"
+
+[copy]
+other = "Copy"
+
+[copied]
+other = "Copied"
+
+[copyCodeAria]
+other = "Copy code to clipboard"

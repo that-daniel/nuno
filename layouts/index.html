@@ -1,0 +1,55 @@
+{{ define "main" }}
+{{- $s := .Site -}}
+{{- $sections := $s.Params.mainSections | default (slice "posts") -}}
+{{- $posts := where $s.RegularPages "Type" "in" $sections -}}
+{{- $n := int ($s.Params.postsOnHome | default 6) -}}
+{{- $recent := first $n $posts -}}
+
+{{- /* Where "Archive · N" points. Prefer a real /archives/ page. */ -}}
+{{- $archive := "" -}}
+{{- with $s.GetPage "/archives" }}{{ $archive = .RelPermalink }}{{ else }}
+  {{- with $s.GetPage (printf "/%s" (index $sections 0)) }}{{ $archive = .RelPermalink }}{{ end -}}
+{{- end -}}
+
+<header class="masthead">
+  <h1 class="masthead__title">
+    {{- with $s.Params.masthead -}}
+      {{ . | safeHTML }}
+    {{- else -}}
+      {{ $s.Title }}<span class="accent">.</span>
+    {{- end -}}
+  </h1>
+
+  <div class="masthead__side">
+    {{ partial "typer.html" . }}
+    {{- with $s.Params.tagline }}<span class="masthead__tagline">{{ . }}</span>{{ end }}
+  </div>
+</header>
+
+<main id="main" class="section">
+  <div class="section__head">
+    <span class="kicker">{{ i18n "recentWriting" }}</span>
+    {{- with $archive }}
+      <a class="kicker kicker--accent section__head-archive" href="{{ . }}">{{ i18n "archiveCount" (dict "count" (len $posts)) }}</a>
+    {{- end }}
+  </div>
+
+  <div class="cards">
+    {{- range $i, $p := $recent }}
+      <a class="card" href="{{ $p.RelPermalink }}">
+        <span class="card__meta">
+          <span class="card__num">{{ printf "%02d" (add $i 1) }}</span>
+          <span>{{ $p.Date.Format "Jan 2, 2006" }}{{ if $p.ReadingTime }}<span class="nuno-mobile-mins"> · {{ i18n "minutes" (dict "count" $p.ReadingTime) }}</span>{{ end }}</span>
+        </span>
+        <span class="card__title">{{ $p.Title }}</span>
+        {{- with partial "excerpt.html" $p }}<span class="card__excerpt">{{ . }}</span>{{ end }}
+        <span class="card__read">{{ i18n "minutesRead" (dict "count" $p.ReadingTime) }}</span>
+      </a>
+    {{- end }}
+  </div>
+
+  {{- with $archive }}
+    <a class="archive-link" href="{{ . }}">{{ i18n "archiveCountArrow" (dict "count" (len $posts)) }}</a>
+  {{- end }}
+</main>
+{{ end }}

@@ -1,0 +1,82 @@
+{{ define "wrapclass" }}wrap--post{{ end }}
+{{ define "main" }}
+{{- $m := .Params.bookMeta | default dict -}}
+{{- $status := $m.status | default "Read" -}}
+{{- $reading := eq $status "Reading" -}}
+
+<header class="post__header">
+  <div class="post__headline">
+    {{- with $m.author }}<span class="kicker kicker--accent">{{ . }}</span>{{ end }}
+    <h1 class="post__title book__title">{{ .Title }}</h1>
+    {{- with .Description }}<p class="post__subtitle">{{ . }}</p>{{ end }}
+  </div>
+  <div class="post__meta">
+    <span>{{ .Date.Format (.Site.Params.DateFormat | default "January 2, 2006") }}</span>
+    <span>{{ $status }}</span>
+  </div>
+</header>
+
+{{- /* Cover and details sit side by side at the top so the proportions hold
+       however short the notes are; the notes then run full width below. */ -}}
+<section class="book__head">
+  <div class="book__cover-col">
+    {{- with $m.coverImage }}
+      {{ partial "image.html" (dict "src" . "alt" (i18n "bookCoverAlt" (dict "title" $.Title)) "class" "book__cover" "loading" "eager") }}
+    {{- else }}
+      <div class="book__cover book__cover--blank" role="presentation"></div>
+    {{- end }}
+  </div>
+
+  <div class="book__detail-col">
+    {{- if $reading }}<span class="book__badge">{{ i18n "bookReadingNow" }}</span>{{ end }}
+
+    {{- if $m.rating }}
+      <div class="book__rating" aria-label="{{ i18n "bookRated" (dict "rating" $m.rating) }}">
+        {{- partial "stars.html" $m.rating -}}
+      </div>
+    {{- end }}
+
+    <dl class="book__facts">
+      {{- with $m.author }}<div><dt>{{ i18n "bookAuthor" }}</dt><dd>{{ . }}</dd></div>{{ end }}
+      {{- with $m.publisher }}<div><dt>{{ i18n "bookPublisher" }}</dt><dd>{{ . }}</dd></div>{{ end }}
+      {{- with $m.published }}<div><dt>{{ i18n "bookPublished" }}</dt><dd>{{ . }}</dd></div>{{ end }}
+      {{- with $m.pages }}<div><dt>{{ i18n "bookPages" }}</dt><dd>{{ . }}</dd></div>{{ end }}
+      {{- with $m.isbn }}<div><dt>{{ i18n "bookIsbn" }}</dt><dd>{{ . }}</dd></div>{{ end }}
+      <div><dt>{{ i18n "bookStatus" }}</dt><dd>{{ $status }}</dd></div>
+      {{- with $m.genre }}<div><dt>{{ i18n "bookGenre" }}</dt><dd>{{ delimit . ", " }}</dd></div>{{ end }}
+    </dl>
+
+    {{- with $m.goodreadsUrl }}
+      <a class="btn btn--ghost book__link" href="{{ . }}" target="_blank" rel="noopener noreferrer">
+        {{ i18n "bookViewOnGoodreads" }} <span aria-hidden="true">→</span>
+      </a>
+    {{- end }}
+  </div>
+</section>
+
+{{- with .Content }}
+  <article class="prose book__notes" id="main">{{ . }}</article>
+{{- end }}
+
+{{- /* Stay inside the section: .Prev/.Next span every regular page, so a book
+       could otherwise link to a blog post. NextInSection walks towards newer
+       (the opposite direction to .Next/.Prev — verified against real dates). */ -}}
+{{- $older := .PrevInSection -}}
+{{- $newer := .NextInSection -}}
+{{- if or $older $newer }}
+<nav class="post__nav">
+  {{- with $older }}
+    <a class="post__nav-link" href="{{ .RelPermalink }}">
+      <span class="kicker">{{ i18n "older" }}</span>
+      <span class="post__nav-title">{{ .Title }}</span>
+    </a>
+  {{- end }}
+  {{- with $newer }}
+    <a class="post__nav-link post__nav-link--next" href="{{ .RelPermalink }}">
+      <span class="kicker">{{ i18n "newer" }}</span>
+      <span class="post__nav-title">{{ .Title }}</span>
+    </a>
+  {{- end }}
+</nav>
+{{- end }}
+{{ end }}

@@ -1,0 +1,96 @@
+{{- $s := .Site -}}
+{{- /* Both lookups are configurable: a site that calls the section
+       "credentials" sets params.certsSection and puts `type: certs` in that
+       section's _index.md so these layouts still apply. Same for the resume. */ -}}
+{{- $certsSection := $s.Params.certsSection | default "certs" -}}
+{{- $certs := where $s.RegularPages "Section" $certsSection -}}
+{{- $certsPage := $s.GetPage (printf "/%s" $certsSection) -}}
+{{- $resume := $s.GetPage ($s.Params.resumePath | default "/resume") -}}
+{{- $rss := "" -}}
+{{- with $s.Home.OutputFormats.Get "rss" }}{{ $rss = .Permalink }}{{ end -}}
+
+<main class="about" id="main">
+  <div class="about__main">
+    <h1 class="about__title">
+      {{- /* Parts are separate spans with real whitespace between them: stacked
+             on desktop, reflowing to one sentence on mobile. A <br> could not do
+             both — hiding it on mobile leaves no space between the words. */ -}}
+      {{- with (.Params.heading | default $s.Params.aboutHeading) -}}
+        {{ . | safeHTML }}
+      {{- else -}}
+        {{ .Title }}<span class="accent">.</span>
+      {{- end -}}
+    </h1>
+
+    <div class="about__body">{{ .Content }}</div>
+
+    <div class="about__rows">
+      {{- with $certsPage }}
+        <a class="about__row" href="{{ .RelPermalink }}">
+          <span class="kicker">{{ i18n "aboutCerts" }}</span>
+          <span class="about__row-value">
+            <span class="about__row-long">{{ i18n "credentialsCount" (dict "count" (len $certs)) }}{{ with $s.Params.certHighlights }} · {{ delimit . ", " }}{{ end }}</span>
+            <span class="about__row-short">{{ i18n "certificationsCount" (dict "count" (len $certs)) }}</span>
+          </span>
+          <span class="about__arrow" aria-hidden="true">→</span>
+        </a>
+      {{- end }}
+
+      {{- with $resume }}
+        <a class="about__row" href="{{ .RelPermalink }}">
+          <span class="kicker">{{ i18n "aboutResume" }}</span>
+          <span class="about__row-value">{{ $s.Params.resumeLabel | default (i18n "downloadPdf") }}</span>
+          <span class="about__arrow" aria-hidden="true">→</span>
+        </a>
+      {{- end }}
+
+      {{- /* The design's ELSEWHERE row lives here as text links. With the icon
+             row under the portrait it would be the same links twice on one
+             screen, so it is off by default. Set aboutElsewhereRow: true to
+             bring it back. */ -}}
+      {{- if eq $s.Params.aboutElsewhereRow true }}
+      <div class="about__row">
+        <span class="kicker">{{ i18n "aboutElsewhere" }}</span>
+        <span class="about__elsewhere">
+          {{- range $s.Params.socialIcons }}
+            <a href="{{ .url }}"{{ if not (hasPrefix .url "mailto:") }} rel="me noopener"{{ end }}>{{ partial "social-name.html" .name }}</a>
+          {{- end }}
+          {{- with $rss }}<a href="{{ . }}">RSS</a>{{ end }}
+        </span>
+      </div>
+      {{- end }}
+    </div>
+  </div>
+
+  <div class="about__portrait-wrap">
+    {{- $portrait := .Params.portrait | default $s.Params.portrait -}}
+    {{- $img := "" -}}
+    {{- with $portrait }}
+      {{- with ($.Resources.GetMatch .) }}{{ $img = . }}{{ else }}
+        {{- with (resources.Get .) }}{{ $img = . }}{{ end -}}
+      {{- end -}}
+    {{- end }}
+    {{- if $img }}
+      {{- /* 800px wide for a 400px slot, so it stays sharp on a 2x display */ -}}
+      {{- $p := $img.Process "resize 800x webp q85" }}
+      <img class="about__portrait" src="{{ $p.RelPermalink }}" width="{{ $p.Width }}" height="{{ $p.Height }}"
+           alt="{{ partial "author.html" $ | default $s.Title }}" loading="lazy" decoding="async">
+    {{- else }}
+      <div class="about__portrait" role="presentation"></div>
+    {{- end }}
+
+    <div class="about__social">
+      {{- range $s.Params.socialIcons }}
+        {{- $ext := not (hasPrefix .url "mailto:") -}}
+        <a class="about__social-link" href="{{ .url }}"
+           {{- if $ext }} target="_blank" rel="me noopener noreferrer"{{ end }}
+           aria-label="{{ partial "social-name.html" .name }}{{ if $ext }} {{ i18n "opensInNewTab" }}{{ end }}"
+           title="{{ partial "social-name.html" .name }}">{{ partial "social-icon.html" .name }}</a>
+      {{- end }}
+      {{- with $rss }}
+        <a class="about__social-link" href="{{ . }}" target="_blank" rel="noopener noreferrer"
+           aria-label="RSS {{ i18n "opensInNewTab" }}" title="RSS">{{ partial "social-icon.html" "rss" }}</a>
+      {{- end }}
+    </div>
+  </div>
+</main>

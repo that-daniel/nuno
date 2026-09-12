@@ -1,0 +1,15 @@
+{{ define "wrapclass" }}wrap--list{{ end }}
+{{ define "main" }}
+<header class="page-header">
+  <h1 class="page-title">{{ .Title }}</h1>
+  {{- with .Content }}<div class="page-header__lead">{{ . }}</div>{{ end }}
+</header>
+
+<main id="main">
+  <div class="terms">
+    {{- range .Pages.ByTitle }}
+      <a class="term-pill" href="{{ .RelPermalink }}">{{ .Title }} <span>{{ len .Pages }}</span></a>
+    {{- end }}
+  </div>
+</main>
+{{ end }}

@@ -1,0 +1,26 @@
+{{ define "wrapclass" }}wrap--list{{ end }}
+{{ define "main" }}
+{{- $pages := .Paginate .Pages -}}
+<header class="page-header">
+  {{- with .Params.kicker }}<span class="kicker kicker--accent">{{ . }}</span>{{ end }}
+  <h1 class="page-title">{{ .Title }}</h1>
+  {{- with .Content }}<div class="page-header__lead">{{ . }}</div>{{ end }}
+</header>
+
+<main id="main">
+  {{- if $pages.Pages }}
+    <div class="rows">
+      {{- range $pages.Pages }}
+        <a class="row" href="{{ .RelPermalink }}">
+          <span class="row__text">
+            <span class="row__title">{{ .Title }}</span>
+            {{- with partial "excerpt.html" . }}<span class="row__excerpt">{{ . }}</span>{{ end }}
+          </span>
+          <span class="row__meta">{{ .Date.Format "Jan 2, 2006" }}{{ if .ReadingTime }} · {{ i18n "minutes" (dict "count" .ReadingTime) }}{{ end }}</span>
+        </a>
+      {{- end }}
+    </div>
+    {{- partial "pager.html" $pages }}
+  {{- end }}
+</main>
+{{ end }}

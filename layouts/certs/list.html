@@ -1,0 +1,45 @@
+{{ define "wrapclass" }}wrap--certs{{ end }}
+{{ define "main" }}
+{{- $certs := .Pages -}}
+
+{{- /* Group by issuer, newest issuer first, so the track you are actively
+       certifying on sits above the ones you have moved on from. */ -}}
+{{- $groups := slice -}}
+{{- range $certs.GroupByParam "certMeta.issuer" -}}
+  {{- $sorted := sort .Pages "Params.certMeta.earnedDate" "desc" -}}
+  {{- $latest := "" -}}
+  {{- with (index $sorted 0) }}{{ $latest = .Params.certMeta.earnedDate }}{{ end -}}
+  {{- $groups = $groups | append (dict
+      "issuer" .Key
+      "items" $sorted
+      "latest" $latest) -}}
+{{- end -}}
+{{- $groups = sort $groups "latest" "desc" -}}
+
+<header class="certs__header">
+  <span class="kicker kicker--accent">
+    {{ i18n "credentialsCount" (dict "count" (len $certs)) }}{{ with .Site.Params.certsKicker }} · {{ . }}{{ end }}
+  </span>
+  <h1 class="page-title">{{ .Title | default (i18n "certifications") }}</h1>
+</header>
+
+<main class="certs__groups" id="main">
+  {{- range $groups }}
+    <section class="certs__group">
+      <span class="kicker certs__issuer">{{ .issuer }}</span>
+      <div class="certs__rows">
+        {{- range .items }}
+          {{- $m := .Params.certMeta -}}
+          {{- $active := eq (lower ($m.status | default "")) "active" -}}
+          <a class="cert" href="{{ .RelPermalink }}">
+            {{ partial "cert-badge.html" (dict "src" $m.badgeImage "alt" .Title "size" 44 "class" "cert__badge") }}
+            <span class="cert__name">{{ partial "cert-name.html" . }}</span>
+            <span class="cert__date">{{ partial "cert-date.html" . }}</span>
+            <span class="cert__status{{ if $active }} is-active{{ end }}">{{ $m.status | default (i18n "certStatusActive") }}</span>
+          </a>
+        {{- end }}
+      </div>
+    </section>
+  {{- end }}
+</main>
+{{ end }}

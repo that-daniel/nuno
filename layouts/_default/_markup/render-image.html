@@ -1,0 +1,8 @@
+{{- /* Markdown images. Goldmark emits a bare <img> with no dimensions, no lazy
+       loading and the original full-size file; partials/image.html fixes all
+       three. The figure shortcode goes through the same partial. */ -}}
+{{- partial "image.html" (dict
+    "src" .Destination
+    "alt" (.PlainText | default .Title)
+    "title" .Title
+) -}}

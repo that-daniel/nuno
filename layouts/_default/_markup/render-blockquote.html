@@ -1,0 +1,5 @@
+{{- /* A trailing paragraph that opens with an em dash is an attribution, so
+       render it as a <cite> in the small muted style from the design. */ -}}
+{{- $html := .Text -}}
+{{- $cited := replaceRE `(?s)<p>\s*(—|&mdash;)\s*(.*?)</p>\s*$` `<cite>— ${2}</cite>` $html -}}
+<blockquote>{{ $cited | safeHTML }}</blockquote>

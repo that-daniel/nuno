@@ -1,0 +1,30 @@
+{{- /* A linkable /search/ page. The real search is the ⌘K overlay, so this page
+       opens it on load and stands as a working fallback if JS is unavailable —
+       rather than rendering as an empty, dateless post. */ -}}
+{{ define "wrapclass" }}wrap--404{{ end }}
+{{ define "main" }}
+{{- $sections := .Site.Params.mainSections | default (slice "posts") -}}
+{{- $count := len (where .Site.RegularPages "Type" "in" $sections) -}}
+<main class="notfound" id="main">
+  <span class="kicker kicker--accent">{{ i18n "search" }}</span>
+  <h1 class="notfound__title">{{ .Title | default (i18n "search") }}<span class="accent">.</span></h1>
+  <p class="notfound__text">
+    {{- with .Content }}{{ . | plainify | chomp }}{{ else -}}
+      {{- /* The ⌘K badge is markup, so the placeholder is passed in as HTML and
+             each sentence stays one translatable unit. */ -}}
+      {{ i18n "searchPageLead" (dict "count" $count) }}
+      {{ i18n "searchPageHint" (dict "key" `<span data-nuno-kbd>⌘K</span>`) | safeHTML }}
+    {{- end }}
+  </p>
+  <div class="btn-row">
+    <button class="btn btn--accent" type="button" data-nuno-search-open>
+      {{ i18n "searchPosts" }} <span data-nuno-kbd>⌘K</span>
+    </button>
+    <a class="btn btn--ghost" href="{{ "" | relURL }}">{{ i18n "backHome" }}</a>
+  </div>
+</main>
+{{- /* Open the overlay straight away for anyone who landed here deliberately */ -}}
+<script>
+addEventListener('load',function(){var b=document.querySelector('[data-nuno-search-open]');if(b)b.click()});
+</script>
+{{ end }}

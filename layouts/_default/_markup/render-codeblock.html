@@ -1,0 +1,15 @@
+{{- /* An untagged fence shows the generic label, which CSS uppercases — so a
+       fence with no language reads "CODE" in the bar. That is deliberate. */ -}}
+{{- $lang := .Type | default (i18n "codeLabel") -}}
+{{- $code := trim .Inner "\n\r" -}}
+<div class="code">
+  <div class="code__bar">
+    <span>{{ $lang }}</span>
+    <button class="code__copy" type="button" data-nuno-copy aria-label="{{ i18n "copyCodeAria" }}">{{ i18n "copy" }}</button>
+  </div>
+  {{- if .Type -}}
+    {{ transform.Highlight $code .Type .Options }}
+  {{- else -}}
+    <pre><code>{{ $code }}</code></pre>
+  {{- end -}}
+</div>

@@ -1,0 +1,24 @@
+{{- /* Search index. Titles, descriptions and tags only — never bodies, so the
+       payload stays small enough to fetch on the first keystroke.
+       Keys are terse because this ships over the wire:
+         t = title, d = excerpt, u = url, m = "Apr 2026 · Homelab",
+         g = extra searchable terms (tags + category), omitted when empty.
+       Title and excerpt are searched directly rather than duplicated into a
+       combined key. */ -}}
+{{- $sections := .Site.Params.mainSections | default (slice "posts") -}}
+{{- $pages := where .Site.RegularPages "Type" "in" $sections -}}
+{{- $index := slice -}}
+{{- range $pages -}}
+  {{- $excerpt := partial "excerpt.html" . -}}
+  {{- $tags := .Params.tags | default slice -}}
+  {{- $cat := "" -}}
+  {{- with (index (.Params.categories | default slice) 0) }}{{ $cat = . }}{{ end -}}
+  {{- if not $cat }}{{ with (index $tags 0) }}{{ $cat = . }}{{ end }}{{ end -}}
+  {{- $meta := .Date.Format "Jan 2006" -}}
+  {{- with $cat }}{{ $meta = printf "%s · %s" $meta . }}{{ end -}}
+  {{- $entry := dict "t" .Title "d" $excerpt "u" .RelPermalink "m" $meta -}}
+  {{- $extra := lower (trim (delimit (append (slice $cat) $tags) " ") " ") -}}
+  {{- with $extra }}{{ $entry = merge $entry (dict "g" .) }}{{ end -}}
+  {{- $index = $index | append $entry -}}
+{{- end -}}
+{{- $index | jsonify -}}
