@@ -122,6 +122,9 @@ other = "On this page"
 [byAuthor]
 other = "by {{ .name }}"
 
+[updatedOn]
+other = "Updated {{ .date }}"
+
 [tagged]
 other = "Tagged · {{ .tags }}"
 

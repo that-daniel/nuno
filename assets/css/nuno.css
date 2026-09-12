@@ -180,6 +180,8 @@ a:hover { color: var(--accent); }
   white-space: nowrap;
 }
 .nav__mobile-only { display: none; }
+.nav__langs { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; }
+.nav__lang:hover { color: var(--accent); }
 
 /* --- Masthead ---------------------------------------------------------- */
 .masthead {

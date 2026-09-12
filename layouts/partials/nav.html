@@ -9,6 +9,20 @@
        href="{{ .URL | relURL }}"{{ if $current }} aria-current="page"{{ end }}>{{ .Name }}</a>
   {{- end }}
 
+  {{- /* Language switcher. Only on a multilingual build, and only listing the
+         languages this page actually exists in — offering a link to a page that
+         is not translated sends the reader to a 404 rather than to a
+         translation. Plain links, not a dropdown: with two or three languages a
+         menu is more machinery than the job needs. */ -}}
+  {{- with .Translations }}
+    <span class="nav__langs">
+      {{- range . }}
+        <a class="nav__lang" href="{{ .Permalink }}" lang="{{ .Language.Locale }}"
+           hreflang="{{ .Language.Locale }}">{{ .Language.Label | default .Language.Lang }}</a>
+      {{- end }}
+    </span>
+  {{- end }}
+
   <button class="nav__icon" type="button" data-nuno-theme-toggle aria-label="{{ i18n "switchColourTheme" }}">
     <span data-nuno-theme-glyph aria-hidden="true">☾</span>
   </button>
