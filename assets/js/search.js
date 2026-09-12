@@ -139,8 +139,21 @@
     overlay.hidden = false;
     document.body.style.overflow = 'hidden';
     load();
-    input.focus();
+
+    /* Focus straight away — on iOS this is the call that raises the keyboard,
+       and it only counts while the tap that opened us is still current. The
+       overlay went from display:none to visible a line ago, though, and Safari
+       will occasionally refuse a focus() against a box it has not laid out
+       yet, so try again on the next frame if it did not take. */
+    input.focus({ preventScroll: true });
     input.select();
+    if (document.activeElement !== input) {
+      window.requestAnimationFrame(function () {
+        input.focus({ preventScroll: true });
+        input.select();
+      });
+    }
+
     if (input.value.trim()) onInput();
   }
 

@@ -120,12 +120,28 @@
   }
 
   function openSearch() {
+    /* Open synchronously when the bundle is already in. iOS only raises the
+       keyboard for a focus() that is still inside the tap that asked for it,
+       and a network round trip puts us well outside it. */
+    if (window.nunoSearch) {
+      window.nunoSearch.open();
+      return;
+    }
     loadSearch().then(function () {
       if (window.nunoSearch) window.nunoSearch.open();
     }).catch(function () { /* search is an enhancement; ignore */ });
   }
 
   $$('[data-nuno-search-open]').forEach(function (el) {
+    /* Warm the bundle on the press, before the click lands, so the click above
+       almost always takes the synchronous path. Pointer events cover both mice
+       and touch; the touchstart is for older iOS. */
+    ['pointerdown', 'touchstart'].forEach(function (evt) {
+      el.addEventListener(evt, function () {
+        loadSearch().catch(function () {});
+      }, { passive: true });
+    });
+
     el.addEventListener('click', function (e) {
       e.preventDefault();
       openSearch();

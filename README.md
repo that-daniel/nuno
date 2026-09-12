@@ -260,9 +260,9 @@ Worth knowing before you switch:
   number: with a year heading and a date on every row, a counter is a third
   ordering cue. It needs more than one year of posts to be worth turning on.
 
-Both list styles honour `postsOnHome` and truncate to four entries on mobile
-with the archive link beneath — except a grouped ledger, which shows everything
-it was given, since cutting a year in half misstates the history.
+Both list styles honour `postsOnHome` on every viewport; mobile drops the
+excerpts and puts the archive link beneath the list rather than shortening it.
+Set `postsOnHome` lower if a phone-sized list feels long.
 
 ## Theme and ground
 

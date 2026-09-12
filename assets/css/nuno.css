@@ -1530,7 +1530,9 @@ a:hover { color: var(--accent); }
   .typer__ghost { display: none; }
   .typer { display: block; }
 
-  /* Cards */
+  /* Cards. How many posts show is params.postsOnHome on every viewport — CSS
+     used to cut the list to four here, which contradicted the param and left
+     "Show more" revealing rows that stayed hidden. */
   .section { gap: 28px; }
   .section__head-archive { display: none; } /* moves to the foot of the list */
   .cards { grid-template-columns: minmax(0, 1fr); gap: 0; }
@@ -1540,7 +1542,6 @@ a:hover { color: var(--accent); }
   .card__title { font-size: 20px; }
   .card__excerpt, .card__read { display: none; }
   .nuno-mobile-mins { display: inline; }
-  .cards .card:nth-child(n + 5) { display: none; } /* 4 posts on mobile */
   .archive-link { display: inline-block; margin-top: 28px; }
 
   /* Ledger: number and title on one line, meta beneath. The arrow is the
@@ -1553,9 +1554,6 @@ a:hover { color: var(--accent); }
   .ledger__title { font-size: 18px; }
   .ledger__meta { grid-column: 2; font-size: 12px; }
   .ledger__arrow { display: none; }
-  /* 4 posts on mobile, matching the grid. Ungrouped only: cutting a year in
-     half misstates the history, so a grouped ledger shows everything. */
-  .ledger:not(.ledger--grouped) .ledger__item:nth-child(n + 5) { display: none; }
 
   /* Grouped: the year rail cannot earn its width here, so it becomes a heading
      above its posts. */
