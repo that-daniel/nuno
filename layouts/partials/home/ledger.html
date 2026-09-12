@@ -1,26 +1,32 @@
-{{- /* Home style: ledger. One post per full-width row, numbered.
+{{- /* Home style: ledger. One post per full-width row.
 
-       An ordered list is the honest markup: the numbers are content, not
-       decoration, so they come from <ol> rather than a counter — a screen
-       reader announces position without the theme spelling it out. The visible
-       "01" is CSS-generated and hidden from the a11y tree for that reason.
+       Unlike the grid this never leaves a ragged row, so it suits any post
+       count — one post looks as deliberate as thirty.
 
-       Unlike the grid this never leaves a ragged row, so it suits sites with an
-       awkward post count as much as long ones.
+       params.homeGroupByYear splits the rows under year headings. Grouping
+       drops the running number: with a year heading and a date on every row the
+       counter is a third ordering cue, and restarting it per group would
+       contradict the <ol> positions underneath.
 
-       Context: dict with `recent` and `archive`. */ -}}
+       Context: dict with `recent`, `archive` and `page`. */ -}}
 
-<ol class="ledger">
-  {{- range .recent }}
-    <li class="ledger__item">
-      <a class="ledger__row" href="{{ .RelPermalink }}">
-        <span class="ledger__title">{{ .Title }}</span>
-        <span class="ledger__meta">
-          <span class="ledger__date">{{ .Date.Format "Jan 2, 2006" }}</span>
-          {{- if .ReadingTime }}<span class="ledger__mins"> · {{ i18n "minutes" (dict "count" .ReadingTime) }}</span>{{ end }}
-        </span>
-        <span class="ledger__arrow" aria-hidden="true">→</span>
-      </a>
-    </li>
+{{- $grouped := .page.Site.Params.homeGroupByYear | default false -}}
+
+{{- if $grouped }}
+<div class="ledger ledger--grouped">
+  {{- range .recent.GroupByDate "2006" }}
+    <section class="ledger__group">
+      <h2 class="ledger__year">{{ .Key }}</h2>
+      <ol class="ledger__list">
+        {{- range .Pages }}{{ partial "home/ledger-row.html" . }}{{ end }}
+      </ol>
+    </section>
   {{- end }}
-</ol>
+</div>
+{{- else }}
+<div class="ledger">
+  <ol class="ledger__list">
+    {{- range .recent }}{{ partial "home/ledger-row.html" . }}{{ end }}
+  </ol>
+</div>
+{{- end }}

@@ -75,7 +75,10 @@ params:
   brand: "example.com"              # nav wordmark; defaults to the baseURL host
   tagline: "Notes, since 2024."
   postsOnHome: 6
-  homeStyle: "grid"     # grid | ledger | timeline — see "Home styles" below
+  homeHeader: "masthead"  # masthead | profile — see "Home styles" below
+  homeStyle: "grid"       # grid | ledger
+  homeGroupByYear: false  # ledger only: split rows under year headings
+  profileBio: ""          # profile header bio; defaults to params.description
   masthead: 'Faith,<br>technology<span class="accent">,</span><br>and life.'
   # About heading: use spans, not <br> — they stack on desktop and reflow to one
   # sentence on mobile. A <br> cannot do both.
@@ -147,30 +150,54 @@ rest move to the footer.
 
 ## Home styles
 
-`params.homeStyle` picks how the home page lists recent posts. The masthead,
-section head and archive link are the same in all three; only the list changes.
+Two independent switches, the same shape as [theme and ground](#theme-and-ground):
+the **header** and the **post list** vary separately, so two params give four
+home pages.
 
-| Value      | Looks like                                   | Suits                                            |
-| ---------- | -------------------------------------------- | ------------------------------------------------ |
-| `grid`     | Three columns of preview cards (the default) | A steady cadence and a post count divisible by 3 |
-| `ledger`   | Numbered full-width rows, one post per line  | Any post count — it never leaves a partial row   |
-| `timeline` | Grouped by year, dates in a left rail        | A long back catalogue, where the history is part of the point |
+```yaml
+params:
+  homeHeader: "masthead"   # masthead | profile
+  homeStyle: "grid"        # grid | ledger
+  homeGroupByYear: false   # ledger only
+```
 
-An unrecognised value logs a warning and falls back to `grid`.
+**`homeHeader`** — the hero:
 
-Two things worth knowing before you switch:
+| Value      | Is                                                  |
+| ---------- | --------------------------------------------------- |
+| `masthead` | Oversized type plus the typed line (the default)     |
+| `profile`  | Portrait, name, bio and social icons                 |
 
+**`homeStyle`** — the list:
+
+| Value    | Is                                           | Suits                                            |
+| -------- | -------------------------------------------- | ------------------------------------------------ |
+| `grid`   | Three columns of preview cards (the default) | A steady cadence and a post count divisible by 3 |
+| `ledger` | Numbered full-width rows, one post per line  | Any post count — it never leaves a partial row   |
+
+Unrecognised values log a warning and fall back to the default.
+
+Worth knowing before you switch:
+
+- **`profile` replaces the masthead, it does not sit above it.** Both are the
+  page's hero; stacking them gives the home two competing focal points and
+  pushes the posts below the fold.
+- **`profile` reuses `params.portrait` and `params.socialIcons`** — the same two
+  the About page uses, so there is nothing new to configure. It also means the
+  same portrait appears on both pages, and the social links appear twice on the
+  home page, since the footer already carries them sitewide. If that bothers
+  you, the footer links are the ones to drop.
 - **The grid leaves a ragged last row** when your post count is not a multiple
   of three — four posts render as a row of three plus one third-width card. It
   is not broken, but it is the reason `ledger` exists. Below 1100px the grid
   drops to two columns and below 760px to one, so this only shows on desktop.
-- **`timeline` needs more than one year to earn its rail.** With a single year
-  it renders as one labelled group, which is tidy but no better than `ledger`.
+- **`homeGroupByYear` only applies to `ledger`**, and it drops the running
+  number: with a year heading and a date on every row, a counter is a third
+  ordering cue. It needs more than one year of posts to be worth turning on.
 
-All three use the same `postsOnHome` limit, and all three truncate to four
-entries on mobile with the archive link beneath — except `timeline`, which shows
-every post it was given, since cutting a year in half tells a lie about the
-history.
+Both list styles honour `postsOnHome` and truncate to four entries on mobile
+with the archive link beneath — except a grouped ledger, which shows everything
+it was given, since cutting a year in half misstates the history.
 
 ## Theme and ground
 

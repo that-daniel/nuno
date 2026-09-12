@@ -65,9 +65,16 @@ buildExpired = false
 
   # --- home ----------------------------------------------------------------
   postsOnHome = 6
-  # grid (default) | ledger | timeline. The demo ships four posts, so `grid`
-  # shows a row of three plus one — swap this to see how the other two handle it.
+  # The home page is two independent switches, like theme × ground.
+  #   homeHeader: masthead (default) | profile — profile needs params.portrait
+  #   homeStyle:  grid (default) | ledger
+  # The demo ships four posts, so `grid` shows a row of three plus one; swap to
+  # `ledger` to see a style that takes any post count. homeGroupByYear splits a
+  # ledger under year headings, which needs more than one year to be worth it —
+  # every post here is 2026.
+  homeHeader = "masthead"
   homeStyle = "grid"
+  homeGroupByYear = false
   masthead = 'Minimal<span class="accent">,</span><br>dark<br>by default.'
   mainSections = ["posts"]
   DateFormat = "2 January 2006"

@@ -5,9 +5,18 @@
 {{- $n := int ($s.Params.postsOnHome | default 6) -}}
 {{- $recent := first $n $posts -}}
 
-{{- /* Home style. Unknown values fall back to the grid rather than rendering an
-       empty page — a typo in hugo.toml should cost a warning, not the home. */ -}}
-{{- $styles := slice "grid" "ledger" "timeline" -}}
+{{- /* Two independent switches, the same shape as theme × ground: the header
+       and the post list vary separately, so four home pages come out of two
+       params. Unknown values warn and fall back rather than rendering an empty
+       page — a typo in hugo.toml should cost a warning, not the home. */ -}}
+{{- $headers := slice "masthead" "profile" -}}
+{{- $header := $s.Params.homeHeader | default "masthead" -}}
+{{- if not (in $headers $header) -}}
+  {{- warnf "nuno: unknown params.homeHeader %q, falling back to \"masthead\" (one of: %s)" $header (delimit $headers ", ") -}}
+  {{- $header = "masthead" -}}
+{{- end -}}
+
+{{- $styles := slice "grid" "ledger" -}}
 {{- $style := $s.Params.homeStyle | default "grid" -}}
 {{- if not (in $styles $style) -}}
   {{- warnf "nuno: unknown params.homeStyle %q, falling back to \"grid\" (one of: %s)" $style (delimit $styles ", ") -}}
@@ -20,20 +29,7 @@
   {{- with $s.GetPage (printf "/%s" (index $sections 0)) }}{{ $archive = .RelPermalink }}{{ end -}}
 {{- end -}}
 
-<header class="masthead">
-  <h1 class="masthead__title">
-    {{- with $s.Params.masthead -}}
-      {{ . | safeHTML }}
-    {{- else -}}
-      {{ $s.Title }}<span class="accent">.</span>
-    {{- end -}}
-  </h1>
-
-  <div class="masthead__side">
-    {{ partial "typer.html" . }}
-    {{- with $s.Params.tagline }}<span class="masthead__tagline">{{ . }}</span>{{ end }}
-  </div>
-</header>
+{{ partial (printf "home/header-%s.html" $header) . }}
 
 <main id="main" class="section">
   <div class="section__head">
@@ -43,7 +39,7 @@
     {{- end }}
   </div>
 
-  {{ partial (printf "home/%s.html" $style) (dict "recent" $recent "archive" $archive) }}
+  {{ partial (printf "home/%s.html" $style) (dict "recent" $recent "archive" $archive "page" .) }}
 
   {{- with $archive }}
     <a class="archive-link" href="{{ . }}">{{ i18n "archiveCountArrow" (dict "count" (len $posts)) }}</a>

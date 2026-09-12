@@ -276,12 +276,72 @@ a:hover { color: var(--accent); }
 .nuno-mobile-mins { display: none; }
 .archive-link { font-size: 14px; font-weight: 800; color: var(--accent); display: none; }
 
+/* --- Home header: profile ---------------------------------------------- */
+/* Portrait, name, bio and socials in place of the masthead. */
+.profile {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 36px;
+  align-items: center;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--line);
+}
+.profile__portrait-wrap { display: flex; }
+.profile__portrait {
+  width: 160px;
+  height: 160px;
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface);
+  /* The same accent glow the About portrait carries, scaled to this slot. */
+  box-shadow: 0 18px 36px -20px rgba(0, 0, 0, 0.55);
+  box-shadow:
+    0 18px 36px -20px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 6px 14px -10px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.profile__text { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.profile__name {
+  font-size: 56px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.profile__bio {
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+/* Shares the About page's icon treatment; only the top padding differs. */
+.profile__social { display: flex; align-items: center; gap: 6px; }
+.profile__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  color: var(--ink);
+  border: 1px solid transparent;
+  margin-left: -10px; /* pull the first icon back to the text's left edge */
+}
+.profile__social-link + .profile__social-link { margin-left: 0; }
+.profile__social-link:hover { color: var(--accent); border-color: var(--line); }
+
 /* --- Home style: ledger ------------------------------------------------ */
 /* Full-width numbered rows. The visible counter duplicates the <ol> position,
    so it is decoration and stays out of the accessibility tree. */
-/* The reset zeroes list margin but not padding, so clear the indent or the
-   rows hang 40px right of the masthead and section head above them. */
-.ledger { list-style: none; counter-reset: ledger; padding: 0; }
+.ledger__list {
+  list-style: none;
+  counter-reset: ledger;
+  /* The reset zeroes list margin but not padding, so clear the indent or the
+     rows hang 40px right of the masthead and section head above them. */
+  padding: 0;
+}
 .ledger__item { counter-increment: ledger; }
 .ledger__row {
   display: grid;
@@ -291,7 +351,7 @@ a:hover { color: var(--accent); }
   padding: 18px 0;
   border-top: 1px solid var(--line);
 }
-.ledger__item:last-child .ledger__row { border-bottom: 1px solid var(--line); }
+.ledger__list > .ledger__item:last-child .ledger__row { border-bottom: 1px solid var(--line); }
 .ledger__row::before {
   content: counter(ledger, decimal-leading-zero);
   color: var(--accent);
@@ -321,59 +381,25 @@ a:hover { color: var(--accent); }
   transition: transform 0.18s ease;
 }
 
-/* --- Home style: timeline ---------------------------------------------- */
-/* Years label a left rail; posts hang off it. The rule lives on the list so it
-   stops at the last post of a year instead of running into the next. */
-.timeline { display: flex; flex-direction: column; gap: 40px; }
-.timeline__group {
+/* Grouped by year. The number goes: a year heading plus a date on every row is
+   already two ordering cues, and a third reads as noise. */
+.ledger--grouped { display: flex; flex-direction: column; gap: 40px; }
+.ledger__group {
   display: grid;
   grid-template-columns: 120px minmax(0, 1fr);
   gap: 24px;
   align-items: start;
 }
-.timeline__year {
+.ledger__year {
   font-size: 15px;
   font-weight: 800;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.06em;
-  padding-top: 14px;
+  padding-top: 18px;
 }
-.timeline__list {
-  list-style: none;
-  border-left: 1px solid var(--line);
-  padding-left: 28px;
-}
-.timeline__row {
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 20px;
-  padding: 14px 0;
-}
-.timeline__row:hover { color: inherit; }
-.timeline__row:hover .timeline__title { color: var(--accent); }
-.timeline__item + .timeline__item .timeline__row { border-top: 1px solid var(--line); }
-.timeline__date {
-  font-size: 13px;
-  color: var(--accent);
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.timeline__title {
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-  text-wrap: pretty;
-}
-.timeline__mins {
-  font-size: 13px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
+.ledger--grouped .ledger__row { grid-template-columns: minmax(0, 1fr) auto auto; }
+.ledger--grouped .ledger__row::before { content: none; }
 
 /* --- Footer ------------------------------------------------------------ */
 .foot {
@@ -1289,8 +1315,10 @@ a:hover { color: var(--accent); }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 32px; }
   .ledger__row { gap: 18px; }
   .ledger__title { font-size: 20px; }
-  .timeline__group { grid-template-columns: 92px minmax(0, 1fr); gap: 18px; }
-  .timeline__list { padding-left: 22px; }
+  .ledger__group { grid-template-columns: 92px minmax(0, 1fr); gap: 18px; }
+  .profile { grid-template-columns: 132px minmax(0, 1fr); gap: 28px; }
+  .profile__portrait { width: 132px; height: 132px; }
+  .profile__name { font-size: 44px; }
   .post__header, .post__body { grid-template-columns: minmax(0, 1fr) 260px; gap: 32px; }
   .post__title { font-size: 52px; }
   .about { grid-template-columns: minmax(0, 1fr) 320px; gap: 48px; }
@@ -1358,17 +1386,26 @@ a:hover { color: var(--accent); }
   .ledger__title { font-size: 18px; }
   .ledger__meta { grid-column: 2; font-size: 12px; }
   .ledger__arrow { display: none; }
-  .ledger__item:nth-child(n + 5) { display: none; } /* 4 posts on mobile */
+  /* 4 posts on mobile, matching the grid. Ungrouped only: cutting a year in
+     half misstates the history, so a grouped ledger shows everything. */
+  .ledger:not(.ledger--grouped) .ledger__item:nth-child(n + 5) { display: none; }
 
-  /* Timeline: the rail cannot earn its width here, so the year becomes a
-     heading above its posts. */
-  .timeline { gap: 28px; }
-  .timeline__group { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .timeline__year { padding-top: 0; font-size: 13px; }
-  .timeline__list { border-left: 0; padding-left: 0; }
-  .timeline__row { grid-template-columns: 58px minmax(0, 1fr); gap: 14px; padding: 12px 0; }
-  .timeline__title { font-size: 18px; }
-  .timeline__mins { display: none; }
+  /* Grouped: the year rail cannot earn its width here, so it becomes a heading
+     above its posts. */
+  .ledger--grouped { gap: 28px; }
+  .ledger__group { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .ledger__year { padding-top: 0; font-size: 13px; }
+  .ledger--grouped .ledger__row { grid-template-columns: minmax(0, 1fr); }
+  .ledger--grouped .ledger__meta { grid-column: 1; }
+
+  /* Profile: the portrait stacks above the text and shrinks to a nav-sized
+     avatar — at 390px a 160px circle is most of the fold. */
+  .profile { grid-template-columns: minmax(0, 1fr); gap: 18px; padding-bottom: 28px; }
+  .profile__portrait { width: 88px; height: 88px; }
+  .profile__name { font-size: 36px; }
+  .profile__bio { font-size: 15px; }
+  .profile__social-link { width: 36px; height: 36px; margin-left: -9px; }
+  .profile__social-link + .profile__social-link { margin-left: 0; }
 
   /* Footer */
   /* Mobile footer: nav links, then the ground toggle. No copyright line. */
