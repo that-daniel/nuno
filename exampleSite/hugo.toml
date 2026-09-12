@@ -30,6 +30,27 @@ buildExpired = false
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
+# Drives the "Related reading" block under a post. Without this Hugo indexes
+# `keywords`, which this theme's front matter does not use, so the block would
+# simply never appear. Tags are the strongest signal; date only breaks ties, so
+# a recent post is preferred among equally related ones.
+[related]
+  threshold = 80
+  includeNewer = true
+  toLower = true
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+  [[related.indices]]
+    name = "categories"
+    weight = 60
+  [[related.indices]]
+    name = "series"
+    weight = 40
+  [[related.indices]]
+    name = "date"
+    weight = 10
+
 [markup]
   [markup.tableOfContents]
     startLevel = 2

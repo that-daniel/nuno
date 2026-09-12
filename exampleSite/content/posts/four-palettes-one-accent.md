@@ -3,6 +3,8 @@ title: "Four Palettes, One Accent"
 description: "Two independent switches make four palettes. Here is how they compose, and the contrast rule that constrains every accent you might pick."
 date: 2026-04-18T09:00:00Z
 categories: ["Design"]
+series: ["Getting to know nuno"]
+seriesOrder: 2
 tags: ["Design", "Colour", "Accessibility"]
 ---
 

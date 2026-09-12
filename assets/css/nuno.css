@@ -641,6 +641,76 @@ a:hover { color: var(--accent); }
 .callout__body > *:last-child { margin-bottom: 0; }
 .callout__body p + p { margin-top: 10px; }
 
+/* --- Series navigation -------------------------------------------------- */
+.series {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.series__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.series__title { color: var(--accent); }
+.series__count {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* Numbers come from the <ol>, so a part is announced by position without the
+   theme writing it into the text. */
+.series__list {
+  list-style: decimal;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.series__item::marker { color: var(--muted); font-variant-numeric: tabular-nums; }
+.series__item a:hover { color: var(--accent); }
+.series__item.is-current { color: var(--ink); font-weight: 800; }
+.series__item.is-current::marker { color: var(--accent); font-weight: 800; }
+
+/* --- Related posts ------------------------------------------------------ */
+.related {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.related__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+.related__item { display: flex; flex-direction: column; gap: 8px; }
+.related__item:hover { color: inherit; }
+.related__item:hover .related__title { color: var(--accent); }
+.related__title {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+.related__meta {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Post footer nav */
 .post__nav {
   display: grid;
@@ -1302,6 +1372,9 @@ a:hover { color: var(--accent); }
   .callout__label { font-size: 11px; }
   .callout__body { font-size: 15px; line-height: 1.55; }
   .post__nav { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .series { padding: 16px 18px; gap: 12px; }
+  .series__list { font-size: 14px; gap: 10px; }
+  .related__list { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .post__nav-link--next { text-align: left; grid-column: 1; }
   .post__nav-title { font-size: 17px; }
 

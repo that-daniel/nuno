@@ -3,6 +3,8 @@ title: "Welcome to nuno"
 description: "What the theme is, what it deliberately leaves out, and how to put a site on it in about ten minutes."
 date: 2026-05-04T09:00:00Z
 categories: ["Design"]
+series: ["Getting to know nuno"]
+seriesOrder: 1
 tags: ["Hugo", "Design", "Getting started"]
 ---
 

@@ -122,6 +122,16 @@ other = "by {{ .name }}"
 [tagged]
 other = "Tagged · {{ .tags }}"
 
+[seriesLabel]
+other = "Series"
+
+# Rendered beside the series name, e.g. "Part 2 of 5".
+[seriesPart]
+other = "Part {{ .n }} of {{ .total }}"
+
+[relatedReading]
+other = "Related reading"
+
 [older]
 other = "← Older"
 
