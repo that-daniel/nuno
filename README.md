@@ -30,8 +30,26 @@ content, images and host, not just the theme.
 
 Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 
+| Dark | Light |
+| --- | --- |
+| ![nuno in dark mode](images/screenshot-dark.png) | ![nuno in light mode](images/screenshot-light.png) |
+
+Same page, same build — only the toggle differs. Two more grounds behind it: see
+[theme and ground](#theme-and-ground).
+
 **[Demo](https://that-daniel.github.io/nuno/)** — the demo is the
-[`exampleSite/`](exampleSite/) directory in this repo.
+[`exampleSite/`](exampleSite/) directory in this repo, and the home page styles
+each get their own build of it:
+
+| | |
+| --- | --- |
+| [Default](https://that-daniel.github.io/nuno/) | masthead + grid |
+| [Ledger](https://that-daniel.github.io/nuno/ledger/) | masthead + ledger |
+| [Profile](https://that-daniel.github.io/nuno/profile/) | profile header + grid |
+| [Grouped](https://that-daniel.github.io/nuno/grouped/) | ledger, grouped by year |
+
+They are real builds of the same content under a subpath, not screenshots, so
+they cannot drift from the theme.
 
 ---
 
@@ -219,7 +237,10 @@ params:
 | `grid`   | Three columns of preview cards (the default) | A steady cadence and a post count divisible by 3 |
 | `ledger` | Numbered full-width rows, one post per line  | Any post count — it never leaves a partial row   |
 
-Unrecognised values log a warning and fall back to the default.
+Unrecognised values log a warning and fall back to the default. Each combination
+has a live demo — [ledger](https://that-daniel.github.io/nuno/ledger/),
+[profile](https://that-daniel.github.io/nuno/profile/),
+[grouped](https://that-daniel.github.io/nuno/grouped/).
 
 Worth knowing before you switch:
 

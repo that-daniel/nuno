@@ -10,7 +10,12 @@ always a minor bump at least.
 
 ## Unreleased
 
-Nothing yet.
+### Added
+
+- The demo now publishes one build per home style, so each can be linked
+  directly: `/ledger/`, `/profile/`, `/grouped/`. Real builds of the same
+  content under a subpath, not screenshots, so they cannot drift.
+- Dark and light screenshots in the README.
 
 ## 0.2.1 — 2026-09-12
 
