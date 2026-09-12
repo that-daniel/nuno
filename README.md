@@ -18,7 +18,7 @@ Requires Hugo **extended** 0.158+ (CI builds on 0.158.0 and latest).
 ## Contents
 
 - [Install](#install) · [Configuration](#configuration) · [Navigation](#navigation)
-- [Theme and ground](#theme-and-ground) · [Accents and contrast](#accents-and-contrast)
+- [Home styles](#home-styles) · [Theme and ground](#theme-and-ground) · [Accents and contrast](#accents-and-contrast)
 - [Content](#content): [posts](#posts), [series](#series),
   [related posts](#related-posts), [reading progress](#reading-progress),
   [footnotes](#footnotes), [printing](#printing),
@@ -78,9 +78,13 @@ params:
   brand: "example.com"              # nav wordmark; defaults to the baseURL host
   tagline: "Notes, since 2024."
   postsOnHome: 6
-  postsOnHomeMax: 12    # renders more behind a "Show more" button. Unset, or at
-                        # or below postsOnHome, nothing changes.
-  relatedCount: 3       # "Related reading" entries under a post
+  postsOnHomeMax: 12      # renders more behind a "Show more" button. Unset, or
+                          # at or below postsOnHome, nothing changes.
+  homeHeader: "masthead"  # masthead | profile — see "Home styles" below
+  homeStyle: "grid"       # grid | ledger
+  homeGroupByYear: false  # ledger only: split rows under year headings
+  profileBio: ""          # profile header bio; defaults to params.description
+  relatedCount: 3         # "Related reading" entries under a post
   readingProgress: false  # thin accent bar at the top of a post
   masthead: 'Faith,<br>technology<span class="accent">,</span><br>and life.'
   # About heading: use spans, not <br> — they stack on desktop and reflow to one
@@ -150,6 +154,57 @@ heading `scroll-margin-top`); change one value and the rest follow.
 
 On mobile only the menu entry with `identifier: about` stays in the nav bar; the
 rest move to the footer.
+
+## Home styles
+
+Two independent switches, the same shape as [theme and ground](#theme-and-ground):
+the **header** and the **post list** vary separately, so two params give four
+home pages.
+
+```yaml
+params:
+  homeHeader: "masthead"   # masthead | profile
+  homeStyle: "grid"        # grid | ledger
+  homeGroupByYear: false   # ledger only
+```
+
+**`homeHeader`** — the hero:
+
+| Value      | Is                                                  |
+| ---------- | --------------------------------------------------- |
+| `masthead` | Oversized type plus the typed line (the default)     |
+| `profile`  | Portrait, name, bio and social icons                 |
+
+**`homeStyle`** — the list:
+
+| Value    | Is                                           | Suits                                            |
+| -------- | -------------------------------------------- | ------------------------------------------------ |
+| `grid`   | Three columns of preview cards (the default) | A steady cadence and a post count divisible by 3 |
+| `ledger` | Numbered full-width rows, one post per line  | Any post count — it never leaves a partial row   |
+
+Unrecognised values log a warning and fall back to the default.
+
+Worth knowing before you switch:
+
+- **`profile` replaces the masthead, it does not sit above it.** Both are the
+  page's hero; stacking them gives the home two competing focal points and
+  pushes the posts below the fold.
+- **`profile` reuses `params.portrait` and `params.socialIcons`** — the same two
+  the About page uses, so there is nothing new to configure. It also means the
+  same portrait appears on both pages, and the social links appear twice on the
+  home page, since the footer already carries them sitewide. If that bothers
+  you, the footer links are the ones to drop.
+- **The grid leaves a ragged last row** when your post count is not a multiple
+  of three — four posts render as a row of three plus one third-width card. It
+  is not broken, but it is the reason `ledger` exists. Below 1100px the grid
+  drops to two columns and below 760px to one, so this only shows on desktop.
+- **`homeGroupByYear` only applies to `ledger`**, and it drops the running
+  number: with a year heading and a date on every row, a counter is a third
+  ordering cue. It needs more than one year of posts to be worth turning on.
+
+Both list styles honour `postsOnHome` and truncate to four entries on mobile
+with the archive link beneath — except a grouped ledger, which shows everything
+it was given, since cutting a year in half misstates the history.
 
 ## Theme and ground
 

@@ -63,34 +63,9 @@
   </div>
 
   <div class="about__portrait-wrap">
-    {{- $portrait := .Params.portrait | default $s.Params.portrait -}}
-    {{- $img := "" -}}
-    {{- with $portrait }}
-      {{- with ($.Resources.GetMatch .) }}{{ $img = . }}{{ else }}
-        {{- with (resources.Get .) }}{{ $img = . }}{{ end -}}
-      {{- end -}}
-    {{- end }}
-    {{- if $img }}
-      {{- /* 800px wide for a 400px slot, so it stays sharp on a 2x display */ -}}
-      {{- $p := $img.Process "resize 800x webp q85" }}
-      <img class="about__portrait" src="{{ $p.RelPermalink }}" width="{{ $p.Width }}" height="{{ $p.Height }}"
-           alt="{{ partial "author.html" $ | default $s.Title }}" loading="lazy" decoding="async">
-    {{- else }}
-      <div class="about__portrait" role="presentation"></div>
-    {{- end }}
+    {{- /* 800px wide for a 400px slot, so it stays sharp on a 2x display */ -}}
+    {{ partial "portrait.html" (dict "page" . "class" "about__portrait" "process" "resize 800x webp q85") }}
 
-    <div class="about__social">
-      {{- range $s.Params.socialIcons }}
-        {{- $ext := not (hasPrefix .url "mailto:") -}}
-        <a class="about__social-link" href="{{ .url }}"
-           {{- if $ext }} target="_blank" rel="me noopener noreferrer"{{ end }}
-           aria-label="{{ partial "social-name.html" .name }}{{ if $ext }} {{ i18n "opensInNewTab" }}{{ end }}"
-           title="{{ partial "social-name.html" .name }}">{{ partial "social-icon.html" .name }}</a>
-      {{- end }}
-      {{- with $rss }}
-        <a class="about__social-link" href="{{ . }}" target="_blank" rel="noopener noreferrer"
-           aria-label="RSS {{ i18n "opensInNewTab" }}" title="RSS">{{ partial "social-icon.html" "rss" }}</a>
-      {{- end }}
-    </div>
+    {{ partial "social-row.html" (dict "page" . "prefix" "about") }}
   </div>
 </main>
