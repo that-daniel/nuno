@@ -677,6 +677,54 @@ a:hover { color: var(--accent); }
   .heading-anchor { opacity: 0.45; }
 }
 
+/* --- Footnotes ---------------------------------------------------------- */
+/* Goldmark's own markup: .footnote-ref in the text, a .footnotes block at the
+   end with an <hr> and an ordered list. The <hr> is replaced by the block's own
+   border so it matches every other rule on the page. */
+.prose .footnote-ref {
+  color: var(--accent);
+  font-weight: 800;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+.prose .footnotes {
+  margin-top: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.prose .footnotes hr { display: none; }
+.prose .footnotes ol { padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
+.prose .footnotes li::marker { color: var(--muted); font-variant-numeric: tabular-nums; }
+.prose .footnotes p { margin: 0; }
+.prose .footnote-backref { color: var(--accent); text-decoration: none; margin-left: 6px; }
+/* Jumping to a note should say which one you landed on. */
+.prose .footnotes li:target { color: var(--ink); }
+.prose .footnotes li:target::marker { color: var(--accent); font-weight: 800; }
+
+/* --- Reading progress --------------------------------------------------- */
+/* Above the sticky nav's z-index so it is never covered. Decorative: the value
+   is announced nowhere, because a screen reader already knows the scroll
+   position and a live-updating percentage would be noise. */
+.progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 60;
+  background: transparent;
+  pointer-events: none;
+}
+.progress__bar {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
 /* --- Series navigation -------------------------------------------------- */
 .series {
   display: flex;
@@ -1503,4 +1551,66 @@ a:hover { color: var(--accent); }
   .page-header__lead { font-size: 16px; }
   .row__title { font-size: 17px; }
   .row__excerpt { display: none; }
+}
+
+/* --- Print -------------------------------------------------------------- */
+/* Last in the file so it wins without !important on every line. The goal is a
+   readable article on paper: chrome gone, ink black, links still followable. */
+@media print {
+  /* Forced light regardless of the reader's chosen theme — the dark grounds
+     would print as a solid block of toner. */
+  html[data-theme='dark'],
+  html[data-theme='light'],
+  html[data-theme='dark'][data-ground='brown'],
+  html[data-theme='dark'][data-ground='green'],
+  html[data-theme='light'][data-ground='brown'],
+  html[data-theme='light'][data-ground='green'] {
+    --bg: #fff;
+    --ink: #000;
+    --muted: #444;
+    --line: #bbb;
+    --surface: #fff;
+    --accent: #000;
+    --accent-ink: #fff;
+  }
+
+  /* Navigation, controls and anything that only works with a pointer. */
+  .nav,
+  .foot,
+  .search,
+  .post__aside,
+  .post__nav,
+  .related,
+  .show-more,
+  .progress,
+  .heading-anchor,
+  .ground-toggle,
+  .archive-link,
+  .code__copy,
+  .sr-only { display: none !important; }
+
+  .wrap { min-height: 0; padding: 0; gap: 24px; max-width: none; }
+  .post__body { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .post__title { font-size: 28pt; }
+
+  /* An href the reader cannot see is a dead end on paper. In-page and relative
+     links are skipped: "#the-symptom" printed after a word helps nobody. */
+  .prose a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+    color: #444;
+    word-break: break-all;
+  }
+
+  /* Do not split things that only make sense whole. */
+  .code,
+  .callout,
+  .series,
+  figure,
+  blockquote,
+  table { break-inside: avoid; }
+  h1, h2, h3, h4 { break-after: avoid; }
+
+  .code { border: 1px solid var(--line); }
+  img { max-width: 100% !important; }
 }

@@ -15,6 +15,14 @@
 {{- $sections := .Site.Params.mainSections | default (slice "posts") -}}
 {{- $inSection := and .Section (in $sections .Section) -}}
 
+{{- /* Reading progress. Opt-in, and only on a page that is actually a read —
+       a bar that fills instantly on a three-line page is just a flicker.
+       aria-hidden because a screen reader already knows the scroll position;
+       a live-updating percentage would be noise, not information. */ -}}
+{{- if and (.Site.Params.readingProgress | default false) $inSection }}
+<div class="progress" aria-hidden="true"><span class="progress__bar" data-nuno-progress></span></div>
+{{- end }}
+
 <header class="post__header">
   <div class="post__headline">
     {{- with (index (.Params.categories | default slice) 0) }}

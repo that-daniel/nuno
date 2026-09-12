@@ -300,6 +300,31 @@
     setActive(headings[0].id);
   })();
 
+  /* --- Reading progress -------------------------------------------------- */
+
+  (function progress() {
+    var bar = $('[data-nuno-progress]');
+    if (!bar) return;
+    var ticking = false;
+    /* scaleX rather than width: a transform is composited, so this does not
+       force layout on every frame of a scroll. */
+    var sync = function () {
+      var doc = document.documentElement;
+      var max = doc.scrollHeight - window.innerHeight;
+      var p = max > 0 ? window.pageYOffset / max : 0;
+      bar.style.transform = 'scaleX(' + Math.max(0, Math.min(1, p)) + ')';
+      ticking = false;
+    };
+    var onScroll = function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(sync);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    sync();
+  })();
+
   /* --- Home: show more --------------------------------------------------- */
 
   (function showMore() {

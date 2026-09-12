@@ -84,8 +84,16 @@ buildExpired = false
   # params.portrait is deliberately unset so the About page shows the empty
   # portrait frame — set it to an image under assets/ or static/ to fill it.
 
+  # --- posts ---------------------------------------------------------------
+  # A thin accent bar at the top of a post, tracking scroll. Off by default;
+  # on here so the demo shows it.
+  readingProgress = true
+
   # --- home ----------------------------------------------------------------
   postsOnHome = 6
+  # postsOnHomeMax renders further posts behind a "Show more" button. Unset (or
+  # at or below postsOnHome) it does nothing, which is the default.
+  # postsOnHomeMax = 12
   masthead = 'Minimal<span class="accent">,</span><br>dark<br>by default.'
   mainSections = ["posts"]
   DateFormat = "2 January 2006"

@@ -70,3 +70,13 @@ Some inline elements: a [link to the archive](/archives/), some `inline code`,
 ## What I learned
 
 Measure the boring parts first.
+
+## Footnotes
+
+[Goldmark](https://github.com/yuin/goldmark) renders footnotes, and the theme styles them: the reference is an
+accent superscript[^1], and the notes collect at the foot of the article behind
+a rule. Jumping to one marks it, so you can see which you landed on[^2].
+
+[^1]: The reference and the note link to each other, so a reader can get back
+    to where they were without scrolling.
+[^2]: A second note, to show the list numbering and the spacing between items.
