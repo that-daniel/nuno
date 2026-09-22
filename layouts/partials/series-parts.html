@@ -1,0 +1,18 @@
+{{- /* The pages of a series, in reading order.
+
+       Ordering is chronological unless *every* part declares `seriesOrder`, in
+       which case that wins. Half-ordered is worse than unordered — one post
+       with an explicit number and the rest without produces a list that looks
+       deliberate and is not — so it is all or nothing, and the fallback is the
+       order they were published in.
+
+       Takes the series term page. Returns a page slice. */ -}}
+
+{{- $parts := .Pages -}}
+{{- $numbered := where $parts "Params.seriesOrder" "!=" nil -}}
+{{- if and (gt (len $parts) 0) (eq (len $numbered) (len $parts)) -}}
+  {{- $parts = sort $parts "Params.seriesOrder" -}}
+{{- else -}}
+  {{- $parts = sort $parts "Date" -}}
+{{- end -}}
+{{- return $parts -}}

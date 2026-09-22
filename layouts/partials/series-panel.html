@@ -1,0 +1,116 @@
+{{- /* The aside panel on a post that belongs to a series: two tabs, Chapters
+       and Contents.
+
+       Chapters is the whole series in reading order, optionally broken into
+       named groups; Contents is the page's own table of contents — the thing
+       that used to sit here alone under "On this page".
+
+       Grouping comes from a `seriesGroup` string in each part's front matter,
+       and a heading is emitted whenever it changes as the list is walked. So
+       groups follow reading order rather than overriding it: a part is never
+       lifted out of sequence to join its group, which means a `seriesGroup`
+       that jumps around produces the same heading twice. That is the honest
+       rendering of it — the fix is the ordering, not the display.
+
+       Only one tab renders when there is only one thing to show: a post with
+       no headings worth listing gets chapters with no tab strip at all, rather
+       than a tab that opens onto nothing.
+
+       Below 760px the aside is gone and this same element is moved into the
+       sheet from partials/panel-sheet.html — hence one panel per page, and ids
+       rather than nth-child anywhere it is addressed.
+
+       Takes a dict: page, series (the term page), toc, showToc. */ -}}
+
+{{- $page := .page -}}
+{{- $series := .series -}}
+{{- $toc := .toc -}}
+{{- $parts := partial "series-parts.html" $series -}}
+{{- $tabs := .showToc -}}
+
+{{- /* Which part this is. Used for "Part 3 of 8" under the title — the reader
+       wants to know how much of the series is behind them, and the chapter
+       list alone does not say it at a glance once it is long enough to
+       scroll. */ -}}
+{{- $index := 0 -}}
+{{- range $i, $p := $parts -}}
+  {{- if eq $p.RelPermalink $page.RelPermalink }}{{ $index = add $i 1 }}{{ end -}}
+{{- end -}}
+
+<div class="panel" data-nuno-panel>
+  {{- if $tabs }}
+  <div class="panel__tabs" role="tablist" aria-label="{{ i18n "panelLabel" }}">
+    <button type="button" class="panel__tab is-active" role="tab" id="nuno-tab-chapters"
+            aria-controls="nuno-pane-chapters" aria-selected="true" data-nuno-tab="chapters">
+      {{ partial "panel-icon.html" (dict "name" "book") }}
+      <span>{{ i18n "chaptersTab" }}</span>
+    </button>
+    <button type="button" class="panel__tab" role="tab" id="nuno-tab-contents"
+            aria-controls="nuno-pane-contents" aria-selected="false" tabindex="-1"
+            data-nuno-tab="contents">
+      {{ partial "panel-icon.html" (dict "name" "lines") }}
+      <span>{{ i18n "contentsTab" }}</span>
+    </button>
+  </div>
+  {{- /* Tabs need JavaScript to switch, so without it there is nothing to
+         switch: drop the strip and stack both panes. Cheaper and steadier than
+         rendering them both open and closing one on load, which would flash.
+
+         The inline block under the post header comes back at the same time. It
+         is the only series navigation left on a phone with no JavaScript, since
+         the sheet that would otherwise carry this panel cannot open either. */ -}}
+  <noscript><style>
+    .panel__tabs { display: none; }
+    .panel__pane[hidden] { display: flex !important; }
+    .panel__pane + .panel__pane {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .series-fallback { display: block; }
+  </style></noscript>
+  {{- end }}
+
+  <div class="panel__body">
+    <div class="panel__pane" data-nuno-pane="chapters"
+         {{- if $tabs }} id="nuno-pane-chapters" role="tabpanel" aria-labelledby="nuno-tab-chapters" tabindex="0"{{ end }}>
+      {{- /* Hidden inside the sheet, which puts the same title in its header. */ -}}
+      <div class="chapters__head">
+        {{ partial "panel-icon.html" (dict "name" "book" "size" 18 "class" "chapters__icon") }}
+        <p class="chapters__title">{{ $series.LinkTitle }}</p>
+      </div>
+      {{- with $index }}
+        <p class="chapters__count">{{ i18n "seriesPart" (dict "n" . "total" (len $parts)) }}</p>
+      {{- end }}
+
+      <nav class="chapters" aria-label="{{ i18n "seriesLabel" }}: {{ $series.LinkTitle }}">
+        <a class="chapters__link chapters__link--overview" href="{{ $series.RelPermalink }}">
+          {{- i18n "seriesOverview" -}}
+        </a>
+        {{- $group := "" -}}
+        {{- range $parts }}
+          {{- $g := .Params.seriesGroup | default "" -}}
+          {{- if ne $g $group }}
+            {{- with $g }}<p class="chapters__group">{{ . }}</p>{{ end }}
+            {{- $group = $g -}}
+          {{- end }}
+          {{- if eq .RelPermalink $page.RelPermalink }}
+            <span class="chapters__link is-current" aria-current="page">{{ .LinkTitle }}</span>
+          {{- else }}
+            <a class="chapters__link" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+          {{- end }}
+        {{- end }}
+      </nav>
+    </div>
+
+    {{- if $tabs }}
+    {{- /* Hidden, not absent: the table of contents still tracks the scroll
+           position while the Chapters tab is open, so switching over mid-read
+           shows the highlight already on the right heading. */ -}}
+    <div class="panel__pane" data-nuno-pane="contents" id="nuno-pane-contents" role="tabpanel"
+         aria-labelledby="nuno-tab-contents" tabindex="0" hidden>
+      <div class="toc" data-nuno-toc>{{ $toc }}</div>
+    </div>
+    {{- end }}
+  </div>
+</div>

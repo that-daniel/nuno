@@ -1,4 +1,5 @@
-/* nuno — theme toggles, typed masthead, table of contents, code copy.
+/* nuno — theme toggles, typed masthead, table of contents, the series
+   panel and its mobile sheet, code copy.
    Deferred. Everything is feature-detected, so a failure in one block never
    takes the others down. */
 (function () {
@@ -339,6 +340,159 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
     sync();
+  })();
+
+  /* --- Aside panel: Chapters / Contents ---------------------------------- */
+
+  (function panel() {
+    var host = $('[data-nuno-panel]');
+    if (!host) return;
+    var tabs = $$('[data-nuno-tab]', host);
+    var panes = $$('[data-nuno-pane]', host);
+    /* A panel with no tab strip is a chapter list on its own — nothing to
+       switch between, and no stored preference worth honouring. */
+    if (tabs.length < 2) return;
+
+    function select(name, focus) {
+      tabs.forEach(function (tab) {
+        var on = tab.getAttribute('data-nuno-tab') === name;
+        tab.classList.toggle('is-active', on);
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+        /* One stop in the tab order for the whole strip, per the ARIA tabs
+           pattern: Tab moves past it, the arrows move within it. */
+        tab.tabIndex = on ? 0 : -1;
+        if (on && focus) tab.focus();
+      });
+      panes.forEach(function (pane) {
+        pane.hidden = pane.getAttribute('data-nuno-pane') !== name;
+      });
+      if (store) {
+        try { store.setItem('nuno-panel', name); } catch (e) { /* full or denied */ }
+      }
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () {
+        select(tab.getAttribute('data-nuno-tab'), false);
+      });
+      tab.addEventListener('keydown', function (e) {
+        var next = -1;
+        if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+        else if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = tabs.length - 1;
+        if (next < 0) return;
+        e.preventDefault();
+        select(tabs[next].getAttribute('data-nuno-tab'), true);
+      });
+    });
+
+    /* A reader who switched to Contents on one chapter wants Contents on the
+       next one too — the choice is about how they are reading the series, not
+       about the page they happened to be on. */
+    var saved = null;
+    if (store) {
+      try { saved = store.getItem('nuno-panel'); } catch (e) { saved = null; }
+    }
+    if (saved && $('[data-nuno-pane="' + saved + '"]', host)) select(saved, false);
+  })();
+
+  /* --- The panel's mobile sheet ------------------------------------------ */
+
+  (function panelSheet() {
+    var fab = $('[data-nuno-sheet-open]');
+    var sheet = $('#nuno-sheet');
+    var slot = $('[data-nuno-sheet-slot]');
+    var panel = $('[data-nuno-panel]');
+    var aside = $('.post__aside');
+    if (!fab || !sheet || !slot || !panel || !aside) return;
+
+    /* Keep the 760px in step with the breakpoint in nuno.css that hides the
+       aside — the sheet exists only for the widths where the aside does not. */
+    var narrow = window.matchMedia('(max-width: 760px)');
+    /* The tag line follows the panel in the aside, so the panel goes back in
+       front of it rather than on the end. */
+    var tagged = $('.post__tagged', aside);
+    var lastFocus = null;
+
+    function close() {
+      if (sheet.hidden) return;
+      sheet.hidden = true;
+      fab.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      /* Back where the reader was, but never to <body>: a tap leaves the
+         button unfocused on some browsers, and handing focus to the document
+         would strand a keyboard user at the top of the page. */
+      var back = lastFocus && lastFocus !== document.body && lastFocus.isConnected
+        ? lastFocus
+        : fab;
+      if (back.focus) back.focus({ preventScroll: true });
+    }
+
+    function open() {
+      if (!sheet.hidden) return;
+      lastFocus = document.activeElement;
+      sheet.hidden = false;
+      fab.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      var close$ = $('.sheet__close', sheet);
+      if (close$) close$.focus({ preventScroll: true });
+    }
+
+    /* One panel, two homes. Moving the node keeps every id unique and keeps the
+       table of contents' scroll tracking — bound on load — pointing at the
+       element it was bound to. */
+    function place() {
+      if (narrow.matches) {
+        if (panel.parentNode !== slot) slot.appendChild(panel);
+      } else {
+        close();
+        if (panel.parentNode === slot) aside.insertBefore(panel, tagged || null);
+      }
+    }
+
+    place();
+    /* addListener is the deprecated spelling, and the only one Safari below
+       14 has. */
+    if (narrow.addEventListener) narrow.addEventListener('change', place);
+    else if (narrow.addListener) narrow.addListener(place);
+
+    fab.addEventListener('click', open);
+    $$('[data-nuno-sheet-close]', sheet).forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+
+    /* A table of contents link scrolls the page behind the sheet, so staying
+       open would hide the heading the reader just asked for. Chapter links
+       navigate away and the sheet goes with the page. */
+    sheet.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (a) close();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (sheet.hidden) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+        return;
+      }
+      /* Keep focus inside the sheet while it is open. */
+      if (e.key !== 'Tab') return;
+      var focusable = $$('button, a[href]', sheet).filter(function (el) {
+        return el.offsetParent !== null;
+      });
+      if (!focusable.length) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
   })();
 
   /* --- Reading progress -------------------------------------------------- */

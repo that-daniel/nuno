@@ -1,0 +1,36 @@
+{{- /* The mobile half of the aside panel: a floating button, and the sheet it
+       opens from the right.
+
+       The sheet ships empty. Below 760px the aside is display:none, so the
+       script moves the one real panel from partials/series-panel.html into the
+       slot here and back out again when the viewport widens — rather than
+       rendering it twice, which would duplicate every id on the page and leave
+       the table of contents' scroll tracking bound to whichever copy came
+       first in the DOM.
+
+       Both pieces are display:none above 760px, so nothing here costs a
+       desktop reader anything but the markup.
+
+       Takes a dict: series (the term page). */ -}}
+
+{{- $series := .series -}}
+
+<button class="panel-fab" type="button" data-nuno-sheet-open
+        aria-expanded="false" aria-controls="nuno-sheet">
+  {{ partial "panel-icon.html" (dict "name" "book") }}
+  <span>{{ i18n "outlineOpen" }}</span>
+</button>
+
+<div class="sheet" id="nuno-sheet" hidden role="dialog" aria-modal="true"
+     aria-labelledby="nuno-sheet-title">
+  <div class="sheet__scrim" data-nuno-sheet-close></div>
+  <div class="sheet__panel">
+    <div class="sheet__head">
+      {{ partial "panel-icon.html" (dict "name" "book" "size" 18) }}
+      <p class="sheet__title" id="nuno-sheet-title">{{ $series.LinkTitle }}</p>
+      <button class="sheet__close" type="button" data-nuno-sheet-close
+              aria-label="{{ i18n "outlineClose" }}">&times;</button>
+    </div>
+    <div class="sheet__slot" data-nuno-sheet-slot></div>
+  </div>
+</div>

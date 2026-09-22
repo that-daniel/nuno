@@ -89,6 +89,11 @@ buildExpired = false
   # on here so the demo shows it.
   readingProgress = true
 
+  # On a post in a multi-part series, the aside becomes Chapters/Contents tabs,
+  # and below 760px it moves into a sheet behind a floating "Outline" button.
+  # On by default; false restores a plain "On this page" aside everywhere.
+  # seriesPanel = true
+
   # --- home ----------------------------------------------------------------
   postsOnHome = 6
   # postsOnHomeMax renders further posts behind a "Show more" button. Unset (or

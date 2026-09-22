@@ -146,6 +146,29 @@ other = "Series"
 [seriesPart]
 other = "Part {{ .n }} of {{ .total }}"
 
+# The first row of the chapter list: the series' own page, which carries its
+# description and every part.
+[seriesOverview]
+other = "Overview"
+
+# Accessible name for the aside's tab strip on a post in a series.
+[panelLabel]
+other = "Post navigation"
+
+[chaptersTab]
+other = "Chapters"
+
+[contentsTab]
+other = "Contents"
+
+# The floating button below 760px, where the aside is gone, and the label on the
+# button that closes the sheet it opens.
+[outlineOpen]
+other = "Outline"
+
+[outlineClose]
+other = "Close"
+
 [relatedReading]
 other = "Related reading"
 

@@ -8,7 +8,31 @@ change and will say so at the top of its section; patch releases never do. The
 other contract that matters is `min_version` in `theme.toml` — raising it is
 always a minor bump at least.
 
-## Unreleased
+## 0.3.0 — 2026-09-22
+
+A post already in a series looks different by default: its aside becomes
+Chapters/Contents tabs instead of a plain "On this page" list. Nothing else
+moves, posts in no series are untouched, and `params.seriesPanel = false`
+restores the old aside everywhere.
+
+### Added
+
+- **A series post now navigates its series from the aside.** The aside becomes
+  two tabs — **Chapters**, the whole series with the current part marked, and
+  **Contents**, the table of contents that used to sit there alone under "On
+  this page". The reader's choice of tab is remembered across posts. New
+  optional `seriesGroup` front matter breaks a long series into named sections;
+  the heading is emitted whenever the value changes as the list is walked, so
+  groups follow reading order rather than overriding it.
+
+  Below 760px, where the aside is hidden, the panel moves into a sheet behind a
+  floating **Outline** button; it closes on Escape, on the scrim, and on any
+  table-of-contents link.
+
+  Posts in no series are unchanged, on every viewport. So is a reader with no
+  JavaScript, who still gets the inline series block under the post header.
+  `params.seriesPanel = false` restores the plain "On this page" aside
+  everywhere.
 
 ### Changed
 
