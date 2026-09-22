@@ -5,6 +5,7 @@ date: 2026-05-04T09:00:00Z
 categories: ["Design"]
 series: ["Getting to know nuno"]
 seriesOrder: 1
+seriesGroup: "Design"
 tags: ["Hugo", "Design", "Getting started"]
 ---
 

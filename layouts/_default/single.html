@@ -8,6 +8,16 @@
 {{- $headings := len (findRE "<li" $toc) -}}
 {{- $showToc := and (ge $headings 2) (ne (.Params.showToc | default true) false) -}}
 
+{{- /* A post in a multi-part series navigates the series from the aside, with
+       the table of contents demoted to the second tab. Opt out with
+       `seriesPanel = false` and the aside goes back to the plain "On this page"
+       list, series or no series. */ -}}
+{{- $primary := partial "series-primary.html" . -}}
+{{- $showPanel := and $primary (ne (.Site.Params.seriesPanel | default true) false) -}}
+{{- /* The panel can be the only thing in the aside: a two-paragraph chapter
+       with no headings still belongs to the series. */ -}}
+{{- $showAside := or $showToc $showPanel -}}
+
 {{- /* Only chain and cross-link pages that belong to a content section. Root
        level pages like /search/ and /resume/ are otherwise strung together as
        if they were a series, which they are not. Needed above for related
@@ -56,17 +66,28 @@
   {{- end }}
 </header>
 
+{{- /* Wrapped when the panel is up, because then this block is saying the same
+       thing twice on a wide screen. The wrapper — not the partial — is hidden,
+       so the block survives at the widths where the aside does not. */ -}}
+{{- if $showPanel }}
+<div class="series-fallback">{{ partial "series-nav.html" . }}</div>
+{{- else }}
 {{ partial "series-nav.html" . }}
+{{- end }}
 
-<div class="post__body{{ if not $showToc }} post__body--wide{{ end }}">
+<div class="post__body{{ if not $showAside }} post__body--wide{{ end }}">
   <article class="prose" id="main">
     {{ .Content }}
   </article>
 
-  {{- if $showToc }}
+  {{- if $showAside }}
   <aside class="post__aside">
-    <span class="kicker">{{ i18n "onThisPage" }}</span>
-    <div class="toc" data-nuno-toc>{{ $toc }}</div>
+    {{- if $showPanel }}
+      {{ partial "series-panel.html" (dict "page" . "series" $primary "toc" $toc "showToc" $showToc) }}
+    {{- else }}
+      <span class="kicker">{{ i18n "onThisPage" }}</span>
+      <div class="toc" data-nuno-toc>{{ $toc }}</div>
+    {{- end }}
     {{- with .Params.tags }}
       <span class="post__tagged">{{ i18n "tagged" (dict "tags" (delimit . ", ")) }}</span>
     {{- end }}
@@ -102,5 +123,10 @@
 {{- /* Last on the page, and only on a post: comments under /search/ or a
        resume would be a thread about nothing. */ -}}
 {{- if $inSection }}{{ partial "comments.html" . }}{{ end }}
+
+{{- /* Last in the document, outside .post__body: the sheet is fixed-position
+       and the floating button must not sit inside the aside that hides itself
+       on the very widths where the button is wanted. */ -}}
+{{- if $showPanel }}{{ partial "panel-sheet.html" (dict "series" $primary) }}{{ end }}
 {{- end }}
 {{ end }}

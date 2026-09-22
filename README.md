@@ -140,6 +140,7 @@ params:
   profileBio: ""          # profile header bio; defaults to params.description
   relatedCount: 3         # "Related reading" entries under a post
   readingProgress: false  # thin accent bar at the top of a post
+  seriesPanel: true       # Chapters/Contents tabs in the aside on a series post
   showLastmod: false      # "Updated …" byline; read the caveat under Posts
   masthead: 'Faith,<br>technology<span class="accent">,</span><br>and life.'
   # About heading: use spans, not <br> — they stack on desktop and reflow to one
@@ -335,18 +336,39 @@ Hugo's own anchor, the same one the table of contents targets.
 
 ### Series
 
-Add a post to a series with the `series` taxonomy, and it grows a block listing
-every part with the current one marked:
+Add a post to a series with the `series` taxonomy:
 
 ```yaml
 series: ["Getting to know nuno"]
-seriesOrder: 2      # optional
+seriesOrder: 2          # optional
+seriesGroup: "Design"   # optional
 ```
 
 Order is chronological unless **every** part sets `seriesOrder`, in which case
 that wins. Half-ordered is worse than unordered — one numbered post among
 unnumbered ones produces a list that looks deliberate and is not — so it is all
 or nothing. A series of one renders nothing; "Part 1 of 1" is noise.
+
+A post in a series navigates it from the aside, which becomes two tabs:
+**Chapters**, the whole series with the current part marked, and **Contents**,
+the page's own table of contents. Which tab the reader last chose is remembered,
+so a series read front to back stays on whichever one they prefer.
+
+`seriesGroup` breaks a long series into named sections. The heading is emitted
+whenever the value changes as the list is walked, so groups follow reading order
+rather than overriding it — a part is never lifted out of sequence to join its
+group, and a `seriesGroup` that jumps around prints the same heading twice.
+Parts that set nothing are simply ungrouped. Leave it off entirely and the
+chapter list is flat.
+
+Below 760px the aside is gone, so the panel moves into a sheet behind a floating
+**Outline** button in the corner. It closes on Escape, on the scrim, and on any
+table-of-contents link — the reader asked to be somewhere else on the page.
+
+`params.seriesPanel: false` turns all of this off and the aside goes back to a
+plain "On this page" list, series or no series. Posts that are in no series are
+unaffected either way; so is a reader with no JavaScript, who gets the inline
+series block under the post header instead, as every reader did before.
 
 ### Related posts
 
@@ -666,9 +688,10 @@ alternate would be noise.
 ## Assets
 
 - `assets/css/nuno.css` — the whole stylesheet, minified and inlined into
-  `<head>` (~16 KB raw, ~4 KB gzipped).
-- `assets/js/app.js` — theme toggles, typed masthead, TOC, copy buttons.
-  Deferred, ~2 KB gzipped.
+  `<head>` (~45 KB raw, ~9 KB gzipped).
+- `assets/js/app.js` — theme toggles, typed masthead, TOC, the series panel
+  and its mobile sheet, copy buttons.
+  Deferred, ~3.5 KB gzipped.
 - `assets/js/search.js` — the overlay, fetched on first ⌘K / click / `/`.
 - `static/fonts/nunito-{latin,latin-ext}.woff2` — Nunito variable (weights
   200–1000) from Google Fonts, [OFL](static/fonts/OFL.txt).
@@ -694,7 +717,7 @@ these numbers for a reader who does not scroll to the bottom, because giscus is
 not fetched until they do.
 
 What keeps it fast: one preloaded font file with `font-display: swap`; CSS
-inlined in `<head>`; ~2 KB of deferred JS with search fetched only on first use;
+inlined in `<head>`; ~3.5 KB of deferred JS with search fetched only on first use;
 every image processed at build time; and prefetch on hover via the Speculation
 Rules API (`params.prefetch: false` disables it).
 

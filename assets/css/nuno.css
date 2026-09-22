@@ -612,6 +612,202 @@ a:hover { color: var(--accent); }
 .toc ul ul a { padding-left: 30px; font-weight: 400; } /* h3, indented */
 .post__tagged { font-size: 13px; color: var(--muted); margin-top: 8px; }
 
+/* --- Aside panel: Chapters / Contents ----------------------------------- */
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.panel__tabs { display: flex; border-bottom: 1px solid var(--line); }
+.panel__tab {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.panel__tab svg { flex: none; }
+/* Inset, because .panel clips its overflow and a 2px outset outline on the
+   first tab would be shaved down two sides. */
+.panel__tab:focus-visible { outline-offset: -2px; border-radius: 0; }
+.panel__tab:hover { color: var(--ink); }
+/* An inset shadow rather than a border, so the underline does not shift the
+   tab by 2px the moment it becomes the active one. */
+.panel__tab.is-active {
+  color: var(--accent);
+  background: var(--bg);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.panel__body { padding: 14px; }
+/* Long series outrun the viewport, and the aside is sticky, so the pane scrolls
+   inside itself rather than running off the bottom of the screen. The subtrahend
+   covers the nav, the sticky offset and the panel's own chrome. */
+.panel__pane {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: calc(100vh - var(--nav-h) - 150px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+/* [hidden] is display:none in the UA sheet, and the rule above would beat it. */
+.panel__pane[hidden] { display: none; }
+.panel__pane::-webkit-scrollbar { width: 6px; }
+.panel__pane::-webkit-scrollbar-track { background: transparent; }
+.panel__pane::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+.chapters__head { display: flex; align-items: flex-start; gap: 8px; color: var(--accent); }
+.chapters__icon { flex: none; margin-top: 2px; }
+.chapters__title { font-size: 15px; font-weight: 800; line-height: 1.25; text-wrap: pretty; }
+.chapters__count {
+  margin-top: -4px;
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.chapters { display: flex; flex-direction: column; gap: 2px; }
+.chapters__link {
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+.chapters__link:hover {
+  color: var(--accent);
+  background: var(--surface);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+/* The series' own page is a destination, not a chapter; it reads as one if it
+   carries the same weight as the parts. */
+.chapters__link--overview { font-weight: 400; }
+.chapters__link.is-current {
+  color: var(--accent);
+  font-weight: 800;
+  background: var(--line);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.chapters__group {
+  padding: 12px 10px 4px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+/* The inline series block under the header says the same thing as the panel, so
+   wherever the panel can be reached — the aside on desktop, the sheet below
+   760px — it stays down. It comes back for print, and for a reader with no
+   JavaScript (see the <noscript> in partials/series-panel.html), which are
+   exactly the cases where neither the aside nor the sheet is available. */
+.series-fallback { display: none; }
+
+/* --- The panel's mobile half: floating button, and the sheet ------------- */
+/* Both are off entirely until the aside goes away at 760px. */
+.panel-fab, .sheet { display: none; }
+
+.panel-fab {
+  position: fixed;
+  right: 16px;
+  /* Clear of the iOS home indicator and Safari's floating URL bar. */
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.5);
+}
+
+.sheet { position: fixed; inset: 0; z-index: 100; }
+.sheet[hidden] { display: none; }
+.sheet__scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.55); }
+.sheet__panel {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: min(360px, 88vw);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border-left: 1px solid var(--line);
+  animation: sheet-in 180ms ease-out;
+}
+@keyframes sheet-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+.sheet__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 8px 14px 18px;
+  color: var(--accent);
+  border-bottom: 1px solid var(--line);
+}
+.sheet__title {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.25;
+  /* One line, clipped: the chapter list below is what the reader came for, and
+     a four-line series title would push it off the top of the sheet. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sheet__close {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  font: inherit;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.sheet__close:hover { color: var(--ink); }
+.sheet__slot {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px 14px calc(20px + env(safe-area-inset-bottom, 0px));
+}
+/* The panel is a card in the aside; in the sheet it is the whole surface, and
+   the sheet already scrolls, so it gives up its chrome and its scroll cap. */
+.sheet .panel { border: 0; border-radius: 0; background: none; }
+.sheet .panel__body { padding: 0; }
+.sheet .panel__pane { max-height: none; overflow: visible; }
+.sheet .panel__tabs { margin-bottom: 14px; }
+/* The sheet header already names the series. */
+.sheet .chapters__head { display: none; }
+
 /* --- Prose ------------------------------------------------------------- */
 .prose {
   max-width: 680px;
@@ -1488,6 +1684,11 @@ a:hover { color: var(--accent); }
   .profile__name { font-size: 44px; }
   .post__header, .post__body { grid-template-columns: minmax(0, 1fr) 260px; gap: 32px; }
   .post__title { font-size: 52px; }
+  /* 260px of column, so the panel gives its padding back to the titles. */
+  .panel__body { padding: 10px; }
+  .panel__tab { padding: 10px 6px; gap: 6px; font-size: 12px; }
+  .chapters__link { padding: 6px 8px; font-size: 13px; }
+  .chapters__group { padding: 10px 8px 4px; }
   .about { grid-template-columns: minmax(0, 1fr) 320px; gap: 48px; }
   .about__title { font-size: 80px; }
   .page-title, .notfound__title { font-size: 72px; }
@@ -1616,6 +1817,11 @@ a:hover { color: var(--accent); }
   .post__meta-author { display: none; }
   .post__body { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .post__aside { display: none; }
+  /* The aside is gone, so the panel moves into the sheet and the button that
+     opens it appears. */
+  .panel-fab { display: inline-flex; }
+  .sheet { display: block; }
+  .sheet[hidden] { display: none; }
   .prose { font-size: 16px; line-height: 1.7; gap: 18px; }
   .prose h2 { font-size: 24px; }
   .prose h3 { font-size: 19px; }
@@ -1761,9 +1967,14 @@ a:hover { color: var(--accent); }
   .ground-toggle,
   .archive-link,
   .code__copy,
+  .panel-fab,
+  .sheet,
   .sr-only { display: none !important; }
 
   .wrap { min-height: 0; padding: 0; gap: 24px; max-width: none; }
+  /* The aside does not print, so without this a series post would print with no
+     mention of the series at all. */
+  .series-fallback { display: block; }
   .post__body { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .post__title { font-size: 28pt; }
 

@@ -5,6 +5,7 @@ date: 2026-04-18T09:00:00Z
 categories: ["Design"]
 series: ["Getting to know nuno"]
 seriesOrder: 2
+seriesGroup: "Design"
 tags: ["Design", "Colour", "Accessibility"]
 ---
 

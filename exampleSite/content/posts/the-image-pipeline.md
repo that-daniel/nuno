@@ -6,6 +6,7 @@ lastmod: 2026-05-20T09:00:00Z
 categories: ["Performance"]
 series: ["Getting to know nuno"]
 seriesOrder: 3
+seriesGroup: "Performance"
 tags: ["Performance", "Images", "Hugo"]
 cover:
   image: "images/example-figure.png"

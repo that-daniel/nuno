@@ -1,0 +1,23 @@
+{{- /* The one series a post's aside panel should navigate: the first series it
+       belongs to that has more than one part.
+
+       A post can be in several series, and partials/series-nav.html honours
+       that with a block each. The panel cannot — two sets of tabs in a 320px
+       column is not navigation — so it picks one, and "first declared" is the
+       only choice an author can predict and reorder.
+
+       Series of one are skipped rather than shown, for the same reason
+       series-nav.html skips them: a chapter list with a single chapter in it
+       tells the reader nothing they did not already know.
+
+       Takes the page. Returns the series term page, or false. */ -}}
+
+{{- $found := false -}}
+{{- range .GetTerms "series" -}}
+  {{- if not $found -}}
+    {{- if gt (len (partial "series-parts.html" .)) 1 -}}
+      {{- $found = . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $found -}}
